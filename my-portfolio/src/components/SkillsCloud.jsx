@@ -33,7 +33,7 @@ const skills = [
 
 export function SkillsCloud() {
   return (
-    <div className="w-full">
+    <div className="section w-full">
       <div className="overflow-hidden mb-12">
         <AnimatedText className="text-white text-5xl font-bold">
           Skills & Technologies

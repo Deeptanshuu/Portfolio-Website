@@ -137,13 +137,13 @@ export function Hero() {
           varying float vElevation;
 
           void main() {
-            float mixStrength = (vElevation + 0.15) * 0.85;
-            vec3 color = mix(vec3(0.2), uColor, mixStrength);
+            float mixStrength = (vElevation + 0.25) * 1.2;
+            vec3 color = mix(vec3(0.4), uColor, mixStrength);
             
             float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
-            color += pulse * 0.1;
+            color += pulse * 0.15;
             
-            gl_FragColor = vec4(color, mixStrength);
+            gl_FragColor = vec4(color, mixStrength * 0.9);
           }
         `}
       />
