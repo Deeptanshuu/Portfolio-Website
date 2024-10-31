@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
 import { ScrollControls, Scroll } from '@react-three/drei'
 import { Hero } from './components/Hero'
-import { Interface } from './components/Interface'
+import { Interface } from './components/interface/Interface'
 import { CustomCursor } from './components/CustomCursor'
 
 export default function App() {
@@ -11,14 +11,14 @@ export default function App() {
       <CustomCursor />
       <Canvas
         camera={{ 
-          position: [0, 0, 5],
+          position: [0, 0, 8],
           fov: 45,
           near: 0.1,
           far: 100 
         }}
       >
         <Suspense fallback={null}>
-          <ScrollControls pages={5.5} damping={0.3}>
+          <ScrollControls pages={5.5} damping={0.1}>
             <Hero />
             <Scroll html>
               <Interface />
