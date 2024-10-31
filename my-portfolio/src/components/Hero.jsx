@@ -138,7 +138,7 @@ export function Hero() {
 
           void main() {
             float mixStrength = (vElevation + 0.25) * 1.2;
-            vec3 color = mix(vec3(0.4), uColor, mixStrength);
+            vec3 color = mix(vec3(0.25), uColor, mixStrength);
             
             float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
             color += pulse * 0.15;
