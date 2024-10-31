@@ -18,4 +18,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  "resolutions": {
+    'rollup': 'npm:@rollup/wasm-node@*'
+  }
 }
