@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom cursor */
+* {
+  cursor: none;
+}
+
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  transition: transform 0.1s;
+}
+
+.cursor-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  transition: all 0.15s ease-out;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring::before,
+.cursor-ring::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring::before {
+  width: 2px;
+  height: 24px;
+}
+
+.cursor-ring::after {
+  width: 24px;
+  height: 2px;
+}
+
+.cursor-pointer::before,
+.cursor-pointer::after {
+  background-color: #ff3e3e;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cursive {
+  font-family: 'Unna', serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  background: linear-gradient(120deg, #ffffff, #a8a8a8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradient 8s ease infinite;
+  background-size: 200% auto;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Navigation animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+nav {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  nav {
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Add these at the end of your file */
+
+.project-card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.project-card-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+
+@media (hover: hover) {
+  .project-card:hover img {
+    transform: scale(1.05);
+  }
+}
+
+/* Gradient animations */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Responsive text adjustments */
+@media (max-width: 640px) {
+  h1 {
+    letter-spacing: -0.02em;
+  }
+  
+  .cursive {
+    background-size: 150% auto;
+  }
+}
+
+/* Enhanced hover effects */
+button:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
