@@ -1,9 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import { AnimatedText } from '../AnimatedText'
+import { useState, useEffect } from 'react'
 
 export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
+      {/* Time Display */}
+      <Clock />
+      
       {/* Animated lines */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 top-0 w-px h-full 
@@ -30,6 +34,39 @@ export function Hero() {
         </div>
       </div>
     </section>
+  )
+}
+
+function Clock() {
+  const [time, setTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    })
+  }
+
+  return (
+    <div className="absolute top-32 left-8 sm:left-32 md:left-48 lg:left-64">
+      <AnimatedText delay={1} className="text-white/80 text-xl font-light tracking-relaxed">
+        <div className="flex flex-col gap-4">
+          <span className="text-white/40 px-2">It's</span>
+          <span>{formatTime(time)}</span>
+          <span className="text-white/40 px-1">for me (IST)</span>
+        </div>
+      </AnimatedText>
+    </div>
   )
 }
 
