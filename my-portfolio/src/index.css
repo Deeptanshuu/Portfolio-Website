@@ -143,10 +143,10 @@ nav {
 /* Gradient animations */
 @keyframes gradient {
   0% {
-    background-position: 0% center;
+    background-position: 0% 0%;
   }
   100% {
-    background-position: 200% center;
+    background-position: 200% 0%;
   }
 }
 

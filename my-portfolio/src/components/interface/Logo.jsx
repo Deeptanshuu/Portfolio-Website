@@ -8,29 +8,36 @@ export function Logo() {
   const squareRef = useRef(null)
 
   useEffect(() => {
+    // Wait for refs to be available
+    if (!logoRef.current || !circleRef.current || !squareRef.current) return;
+
+    // Create a timeline for better control
+    const tl = gsap.timeline();
+
     // Animate the gradient background
-    gsap.to(logoRef.current, {
+    tl.to(logoRef.current, {
+      backgroundPositionX: "200%",
       duration: 3,
-      backgroundPosition: '200% center',
       repeat: -1,
       ease: "none"
-    })
+    });
 
     // Animate the circle
-    gsap.to(circleRef.current, {
+    tl.to(circleRef.current, {
       rotation: 360,
       duration: 20,
       repeat: -1,
       ease: "none"
-    })
+    }, 0);
 
     // Animate the square
-    gsap.to(squareRef.current, {
+    tl.to(squareRef.current, {
       rotation: -360,
       duration: 25,
       repeat: -1,
       ease: "none"
-    })
+    }, 0);
+
   }, [])
 
   return (
@@ -54,8 +61,9 @@ export function Logo() {
             ref={logoRef}
             className="text-6xl font-bold relative z-10 block"
             style={{ 
-              background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
-              backgroundSize: '200% auto',
+              background: 'linear-gradient(to right, #ffffff 20%, #4fc1ff 50%, #ffffff 80%)',
+              backgroundSize: '200% 100%',
+              backgroundPosition: '0% 0%',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',

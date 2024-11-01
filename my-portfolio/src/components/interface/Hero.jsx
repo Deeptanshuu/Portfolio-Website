@@ -14,8 +14,8 @@ export function Hero() {
       {/* Time Display */}
       <Clock />
       
-      {/* Animated lines with plus sign */}
-      <div className="absolute inset-0 opacity-20">
+      {/* Animated lines with plus sign - increased opacity to 60% */}
+      <div className="absolute inset-0 opacity-60">
         <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 top-0 w-px h-full 
           bg-gradient-to-b from-transparent via-white to-transparent" />
         
@@ -31,7 +31,7 @@ export function Hero() {
       </div>
       
       <div className="max-w-screen-xl w-full mx-auto relative">
-        <div className="space-y-3 sm:space-y-5 p-10 md:p-0">
+        <div className="space-y-3 sm:space-y-5 md:p-0">
           <div>
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
               font-normal tracking-tighter overflow-hidden leading-tight">
@@ -39,8 +39,9 @@ export function Hero() {
                 <span
                   className="block"
                   style={{ 
-                    background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
-                    backgroundSize: '200% auto',
+                    background: 'linear-gradient(to right, #ffffff 20%, #4fc1ff 50%, #ffffff 80%)',
+                    backgroundSize: '200% 100%',
+                    backgroundPosition: '0% 0%',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',

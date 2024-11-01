@@ -9,7 +9,7 @@ export function Hero() {
   const mesh = useRef()
   const uniformsRef = useRef({
     uTime: { value: 0 },
-    uColor: { value: new THREE.Color('#ffffff') },
+    uColor: { value: new THREE.Color('#4fc1ff') },
     uMouse: { value: new THREE.Vector2(0, 0) },
     uResolution: { value: new THREE.Vector2(width, height) }
   })
@@ -22,12 +22,10 @@ export function Hero() {
 
   return (
     <>
-      {/* Updated lighting for holographic effect */}
       <ambientLight intensity={0.2} />
       <pointLight position={[10, 10, 10]} intensity={1} color="#4fc1ff" />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4fc1ff" />
       
-      {/* Background plane */}
       <mesh ref={mesh} scale={[width * 1.88, height * 1.888, 1]} position={[0, 0, -6]}>
         <planeGeometry args={[1, 1, 32, 32]} />
         <shaderMaterial
@@ -116,9 +114,9 @@ export function Hero() {
               vUv = uv;
               
               vec3 pos = position;
-              float noiseFreq = 1.5;
-              float noiseAmp = 0.15;
-              vec3 noisePos = vec3(pos.x * noiseFreq + uTime, pos.y, pos.z);
+              float noiseFreq = 2.0;
+              float noiseAmp = 0.25;
+              vec3 noisePos = vec3(pos.x * noiseFreq + uTime * 0.5, pos.y * noiseFreq, pos.z);
               pos.z += noise(noisePos) * noiseAmp;
               vElevation = pos.z;
               
@@ -133,19 +131,27 @@ export function Hero() {
             varying float vElevation;
 
             void main() {
-              float mixStrength = (vElevation + 0.15) * 1.15;
-              vec3 color = mix(vec3(0.25), uColor, mixStrength);
+              float mixStrength = (vElevation + 0.25) * 1.0;
+              
+              vec3 darkBlue = vec3(0.0, 0.1, 0.5);
+              vec3 brightBlue = vec3(0.3, 0.7, 0.4);
+              vec3 color = mix(darkBlue, brightBlue, mixStrength);
               
               float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
-              color += pulse * 0.15;
+              color += pulse * 0.2;
               
-              gl_FragColor = vec4(color, mixStrength * 0.9);
+              float scanLine = step(0.5, fract(vUv.y * 50.0 + uTime));
+              color += scanLine * 0.08;
+              
+              float alpha = mixStrength * 0.7;
+              alpha *= 0.9 + pulse * 0.3;
+              
+              gl_FragColor = vec4(color, alpha);
             }
           `}
         />
       </mesh>
 
-      {/* Earth */}
       <Earth />
     </>
   )
