@@ -24,28 +24,17 @@ const socialLinks = [
 
 export function Contact() {
   return (
-    <section id="contact" className="relative py-32">
-      {/* Background gradient */}
+    <section id="contact" className="relative py-32 mb-20 sm:mb-0">
       <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-blue-950/10 to-black/0 pointer-events-none" />
       
-      <div className="max-w-screen-xl mx-auto px-8">
-        {/* Main Content */}
-        <div className="text-right mb-24">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
+        <div className="text-right mb-24 overflow-visible">
           <div className="overflow-visible">
             <AnimatedText>
               <span
-                className="text-8xl font-bold block"
-                style={{ 
-                  background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
-                  backgroundSize: '200% auto',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 0 30px rgba(255,255,255,0.1)',
-                  animation: 'gradient 3s linear infinite'
-                }}
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold block overflow-visible text-white"
               >
-                Let&apos;s work together
+                Let's work together
               </span>
             </AnimatedText>
           </div>
@@ -62,9 +51,7 @@ export function Contact() {
           </div>
         </div>
 
-        {/* Footer with Social Links and Resume */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-4">
-          {/* Social Links */}
           <div className="flex gap-6 scale-150">
             {socialLinks.map((social, index) => (
               <AnimatedText key={social.label} delay={0.1 * index}>
@@ -81,7 +68,6 @@ export function Contact() {
             ))}
           </div>
 
-          {/* Resume Download Button */}
           <AnimatedText delay={0.3}>
             <a
               href="/resume.pdf"
@@ -99,7 +85,6 @@ export function Contact() {
         </div>
       </div>
 
-      {/* Decorative elements */}
       <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
     </section>
   )

@@ -16,7 +16,7 @@ export function SocialLinks({ socialLinks, isMenuOpen }) {
 function ContactInfo() {
   return (
     <div className="text-right">
-      <p className="text-white/40 mb-2 text-sm uppercase tracking-wider">Get in touch</p>
+      <p className="text-white/40 mt-8 text-sm uppercase tracking-wider">Get in touch</p>
       <a 
         href="mailto:your@email.com" 
         className="text-white text-xl hover:text-white/60 transition-colors"

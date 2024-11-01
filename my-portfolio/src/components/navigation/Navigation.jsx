@@ -58,16 +58,16 @@ export function Navigation() {
       
       <div className={`
         fixed top-0 left-0 right-0 z-[9998] 
-        bg-black
+        bg-black/95 backdrop-blur-lg
         transition-all duration-700 ease-in-out
         ${isMenuOpen ? 'h-screen' : 'h-0'}
         overflow-hidden
       `}>
         <div className={`
-          w-full max-w-screen-xl mx-auto px-8 
-          flex justify-between items-start
+          w-full h-full max-w-screen-xl mx-auto px-6 sm:px-8 sm:pt-24
+          flex flex-col sm:flex-row justify-center sm:justify-between items-center sm:items-start
           transition-all duration-700 delay-100
-          ${isMenuOpen ? 'opacity-100 translate-y-32' : 'opacity-0 -translate-y-10'}
+          ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}
         `}>
           <NavigationLinks 
             navItems={navItems}

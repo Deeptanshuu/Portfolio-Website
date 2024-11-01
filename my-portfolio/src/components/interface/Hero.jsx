@@ -6,16 +6,28 @@ import { Logo } from './Logo'
 export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
-      {/* Logo */}
-      <div className="absolute top-16 left-[4rem]">
+      {/* Logo - Updated positioning */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:top-16 sm:left-[5rem]">
         <Logo />
+      </div>
+
+      {/* Status Message */}
+      <div className="absolute top-20 left-8 sm:left-32 md:left-48 lg:left-64">
+        <AnimatedText delay={0.8} className="text-white/80 text-lg font-light tracking-relaxed">
+          <div className="flex items-center gap-2 px-2">
+            <span className="relative flex h-3 w-3 pr-5">
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <span>Looking to collaborate</span>
+          </div>
+        </AnimatedText>
       </div>
 
       {/* Time Display */}
       <Clock />
       
-      {/* Animated lines with plus sign - increased opacity to 60% */}
-      <div className="absolute inset-0 opacity-60">
+      {/* Animated lines with plus sign - hidden on mobile */}
+      <div className="absolute inset-0 opacity-60 hidden md:block">
         <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 top-0 w-px h-full 
           bg-gradient-to-b from-transparent via-white to-transparent" />
         
@@ -36,20 +48,19 @@ export function Hero() {
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
               font-normal tracking-tighter overflow-hidden leading-tight">
               <AnimatedText delay={0.2}>
-                <span
-                  className="block"
-                  style={{ 
-                    background: 'linear-gradient(to right, #ffffff 20%, #4fc1ff 50%, #ffffff 80%)',
-                    backgroundSize: '200% 100%',
-                    backgroundPosition: '0% 0%',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 0 30px rgba(255,255,255,0.1)',
-                    animation: 'gradient 3s linear infinite'
-                  }}
-                >
-                  Hi I'm<br className="sm:hidden" /> Deeptanshu,
+                <span className="block text-white">
+                  Hi I&apos;m <span className="ml-1 sm:ml-1" /> 
+                  <span
+                    style={{ 
+                      color: '#4fc1ff',
+                      textShadow: '0 0 30px rgba(79, 193, 255, 0.3)',
+                      willChange: 'transform',
+                      WebkitFontSmoothing: 'antialiased',
+                      transform: 'translateZ(0)'
+                    }}
+                  >
+                     Deeptanshu,
+                  </span>
                 </span>
               </AnimatedText>
             </h1>
@@ -130,12 +141,11 @@ function Description() {
   return (
     <div className="overflow-hidden max-w-[90%] sm:max-w-2xl">
       <AnimatedText delay={0.8} className="
-        text-transparent bg-clip-text bg-white/100
+        bg-clip-text text-white/80
         text-base sm:text-lg md:text-xl lg:text-2xl 
-        font-light tracking-wide
-        leading-relaxed
+        font-light leading-relaxed
       ">
-        I love everything computers and tech.
+        I love everything space, computers and tech.
       </AnimatedText>
     </div>
   )

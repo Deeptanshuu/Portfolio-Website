@@ -35,8 +35,10 @@ export function SkillsCloud() {
   return (
     <div className="section w-full">
       <div className="overflow-hidden mb-12">
-        <AnimatedText className="text-white text-5xl font-bold">
-          Skills & Technologies
+        <AnimatedText>
+          <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold block text-white">
+            Skills & Technologies
+          </span>
         </AnimatedText>
       </div>
       
@@ -54,7 +56,7 @@ export function SkillsCloud() {
                 backdrop-blur-sm 
                 border border-white/10 
                 rounded-xl
-                p-6
+                p-4 sm:p-6
                 text-white 
                 hover:bg-white/10
                 transition-all 
@@ -88,7 +90,7 @@ export function SkillsCloud() {
               
               {/* Icon */}
               <div 
-                className="w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center
+                className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl flex items-center justify-center
                   transform group-hover:scale-110 transition-transform duration-300"
                 style={{
                   background: `linear-gradient(45deg, ${skill.color}22, transparent)`,
@@ -96,13 +98,12 @@ export function SkillsCloud() {
                 }}
               >
                 <skill.icon 
-                  className="w-8 h-8 m-4 transition-transform duration-300 group-hover:rotate-12" 
+                  className="w-6 h-6 sm:w-8 sm:h-8 m-4 transition-transform duration-300 group-hover:rotate-12" 
                   style={{ color: skill.color }}
                 />
               </div>
-              <br />
 
-              <div className="text-lg font-medium">{skill.name}</div>
+              <div className="text-base sm:text-lg font-medium">{skill.name} <br className="" /></div>
             </div>
           </AnimatedText>
         ))}

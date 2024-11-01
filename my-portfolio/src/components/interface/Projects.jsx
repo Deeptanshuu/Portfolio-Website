@@ -48,23 +48,14 @@ export function Projects() {
         {/* Section Header */}
         <div className="text-center mb-24">
           <div className="overflow-hidden">
-            <AnimatedText className="text-white/80 text-2xl font-light mb-4 uppercase tracking-widest">
+            <AnimatedText className="text-white/80 text-xl sm:text-2xl font-light mb-4 uppercase tracking-widest">
               Featured Work
             </AnimatedText>
           </div>
           <div className="overflow-hidden">
             <AnimatedText>
               <span
-                className="text-8xl font-bold block"
-                style={{ 
-                  background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
-                  backgroundSize: '200% auto',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 0 30px rgba(255,255,255,0.1)',
-                  animation: 'gradient 3s linear infinite'
-                }}
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold block text-white"
               >
                 Recent Projects
               </span>

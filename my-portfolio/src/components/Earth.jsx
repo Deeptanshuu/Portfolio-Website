@@ -1,234 +1,409 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
-import { useRef, Suspense } from 'react'
+import { useRef, Suspense, useMemo, memo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
+import { InstancedMesh, Object3D } from 'three'
 
-function Satellite({ orbitRadius, speed, offset, size = 0.5 }) {
-  const satelliteRef = useRef()
+// Move static configurations outside without useMemo
+const ORBIT_CONFIG = [
+  { radius: 2.3, speed: 1.2, count: 4, rotation: Math.PI * 0.1 },
+  { radius: 2.5, speed: 0.8, count: 5, rotation: -Math.PI * 0.15 },
+  { radius: 2.5, speed: 0.5, count: 6, rotation: Math.PI * 0.2 },
+  { radius: 2.4, speed: 1.0, count: 4, rotation: -Math.PI * 0.25 }
+]
+
+const MOON_CONFIG = {
+  radius: 4.5,
+  speed: 0.25,
+  size: 0.3,
+  color: '#ffffff'
+}
+
+// Create static geometries
+const moonGeometry = new THREE.SphereGeometry(MOON_CONFIG.size, 32, 32)
+const moonGlowGeometry = new THREE.SphereGeometry(MOON_CONFIG.size * 1.2, 32, 32)
+const moonOrbitGeometry = new THREE.RingGeometry(MOON_CONFIG.radius - 0.005, MOON_CONFIG.radius + 0.005, 128)
+const satelliteGeometry = new THREE.SphereGeometry(0.03, 8, 8)
+const earthGeometry = new THREE.SphereGeometry(2, 128, 128)
+const atmosphereGeometry = new THREE.SphereGeometry(2.1, 48, 48)
+const glowGeometry = new THREE.SphereGeometry(2.2, 32, 32)
+
+// Optimize OrbitLine with shared geometry
+const OrbitLine = memo(({ radius }) => {
+  const geometry = useMemo(() => (
+    new THREE.RingGeometry(radius - 0.005, radius + 0.005, 64) // Reduced segments
+  ), [radius])
+  
+  const material = useMemo(() => (
+    new THREE.MeshBasicMaterial({
+      color: "#4fc1ff",
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide
+    })
+  ), [])
+
+  return <mesh rotation-x={Math.PI / 2} geometry={geometry} material={material} />
+})
+
+// Optimize Satellites component
+const Satellites = memo(({ orbitConfig }) => {
+  const meshRef = useRef()
+  const tempObject = useMemo(() => new Object3D(), [])
+  const count = orbitConfig.count
   
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() * speed + offset
-    satelliteRef.current.position.x = Math.cos(t) * orbitRadius
-    satelliteRef.current.position.z = Math.sin(t) * orbitRadius
-    // Add slight y oscillation
-    satelliteRef.current.position.y = Math.sin(t * 0.2) * (orbitRadius * 0.02)
-    // Rotate satellite
-    satelliteRef.current.rotation.y = t
+    for (let i = 0; i < count; i++) {
+      const t = clock.getElapsedTime() * orbitConfig.speed + (i * (Math.PI * 2) / count)
+      tempObject.position.x = Math.cos(t) * orbitConfig.radius
+      tempObject.position.z = Math.sin(t) * orbitConfig.radius
+      tempObject.position.y = Math.sin(t * 0.2) * (orbitConfig.radius * 0.02)
+      tempObject.rotation.y = t
+      tempObject.updateMatrix()
+      meshRef.current.setMatrixAt(i, tempObject.matrix)
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true
+  })
+
+  const material = useMemo(() => new THREE.MeshBasicMaterial({
+    color: "#4fc1ff",
+    transparent: true,
+    opacity: 1
+  }), [])
+
+  return (
+    <instancedMesh 
+      ref={meshRef} 
+      args={[satelliteGeometry, material, count]} 
+    />
+  )
+})
+
+// Optimize Moon component
+const Moon = memo(() => {
+  const moonRef = useRef()
+  const moonGlowRef = useRef()
+  
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime() * MOON_CONFIG.speed
+    
+    // Update moon position
+    const x = Math.cos(t) * MOON_CONFIG.radius
+    const z = Math.sin(t) * MOON_CONFIG.radius
+    moonRef.current.position.set(x, 0, z)
+    moonGlowRef.current.position.set(x, 0, z)
+    
+    // Rotate moon to always face the Earth
+    moonRef.current.rotation.y = t
+    moonGlowRef.current.rotation.y = t
   })
 
   return (
-    <mesh ref={satelliteRef}>
-      <sphereGeometry args={[size, size, size]} />
-      <meshBasicMaterial color="#4fc1ff" transparent opacity={1} />
-    </mesh>
+    <group rotation-x={3.141*0.15}>
+      <mesh rotation-x={3.141 / 2} geometry={moonOrbitGeometry}>
+        <meshBasicMaterial
+          color={MOON_CONFIG.color}
+          transparent
+          opacity={0.6}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      
+      <mesh ref={moonRef} geometry={moonGeometry}>
+        <meshStandardMaterial
+          color={MOON_CONFIG.color}
+          transparent
+          opacity={0.8}
+          emissive={MOON_CONFIG.color}
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+      
+      <mesh ref={moonGlowRef} geometry={moonGlowGeometry}>
+        <meshBasicMaterial
+          color={MOON_CONFIG.color}
+          transparent
+          opacity={0.1}
+          blending={THREE.AdditiveBlending}
+          side={THREE.BackSide}
+        />
+      </mesh>
+    </group>
   )
-}
-
-function OrbitLine({ radius }) {
-  return (
-    <mesh rotation-x={Math.PI / 2}>
-      <ringGeometry args={[radius - 0.005, radius + 0.005, 128]} />
-      <meshBasicMaterial color="#4fc1ff" transparent opacity={0.5} side={THREE.DoubleSide} />
-    </mesh>
-  )
-}
+})
 
 function EarthWithTextures() {
+  // Add missing refs
   const earthRef = useRef()
   const glowRef = useRef()
   const dotsRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
   const target = useRef({ x: 0, y: 0 })
+  const autoRotate = useRef({ x: 0, y: 0 })
 
-  const normalMap = useLoader(TextureLoader, './textures/earth_normal.jpg')
+  // Optimize texture loading with error handling
+  const [normalMap, displacementMap, specularMap] = useMemo(() => {
+    const loader = new TextureLoader()
+    return [
+      loader.load('/textures/earth_normal_map.jpg'),
+      loader.load('/textures/earth_displacement.jpg'),
+      loader.load('/textures/earth_specular.jpg')
+    ]
+  }, [])
+
+  // Optimize frame updates with RAF limiting
+  const frameCount = useRef(0)
+  const FPS_LIMIT = 24
+  const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor }) => {
+    frameCount.current++
+    if (frameCount.current % 2 !== 0) return // Skip every other frame
+
     const time = clock.getElapsedTime()
     
-    target.current.x = (mouseCursor.x * Math.PI) / 5
-    target.current.y = (mouseCursor.y * Math.PI) / 5
+    autoRotate.current.y += 0.005
+    
+    target.current.x = mouseCursor.x * 0.628
+    target.current.y = mouseCursor.y * 0.628
     mouse.current.x += (target.current.x - mouse.current.x) * 0.1
     mouse.current.y += (target.current.y - mouse.current.y) * 0.1
     
     const group = earthRef.current.parent
-    group.rotation.y = -mouse.current.x
+    group.rotation.y = -mouse.current.x + autoRotate.current.y
     group.rotation.x = -mouse.current.y
     
-    earthRef.current.material.uniforms.uTime.value = time
-    
     if (glowRef.current) {
-      glowRef.current.rotation.y = time * 0.1
+      glowRef.current.rotation.y += 0.005
     }
+    
     if (dotsRef.current) {
-      dotsRef.current.rotation.y = time * 0.1
+      dotsRef.current.rotation.y = time * 0.05
       dotsRef.current.material.opacity = 0.6 + Math.sin(time * 2) * 0.2
+    }
+
+    earthRef.current.material.uniforms.uTime.value = time
+    if (dotsRef.current) {
+      dotsRef.current.material.uniforms.uTime.value = time
     }
   })
 
+  // Define Earth material
+  const earthMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        uTime: { value: 0 },
+        uNormalMap: { value: normalMap },
+        uDisplacementMap: { value: displacementMap },
+        uSpecularMap: { value: specularMap },
+        uNormalScale: { value: 10.0 },
+        uDisplacementScale: { value: 0.35 },
+        uOceanColor: { value: new THREE.Color('#001e3c') },
+        uTerrainColor: { value: new THREE.Color('#4fc1ff') },
+        uHighlightColor: { value: new THREE.Color('#7dd2ff') }
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform sampler2D uDisplacementMap;
+        uniform float uDisplacementScale;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        varying float vElevation;
+        
+        void main() {
+          vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          
+          float elevation = texture2D(uDisplacementMap, uv).r;
+          vElevation = elevation;
+          
+          vec3 displaced = position + normal * elevation * uDisplacementScale;
+          
+          vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
+          vec4 viewPosition = viewMatrix * modelPosition;
+          vec4 projectedPosition = projectionMatrix * viewPosition;
+          
+          gl_Position = projectedPosition;
+          vPosition = displaced;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uOceanColor;
+        uniform vec3 uTerrainColor;
+        uniform vec3 uHighlightColor;
+        uniform sampler2D uNormalMap;
+        uniform float uNormalScale;
+        uniform float uTime;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        varying float vElevation;
+
+        void main() {
+          vec3 normal = normalize(vNormal);
+          vec3 normalMap = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+          normal = normalize(normal + normalMap * uNormalScale);
+          
+          vec3 color = uOceanColor;
+          
+          if (vElevation > 0.2) {
+            float terrainMix = smoothstep(0.2, 0.4, vElevation);
+            color = mix(uOceanColor, uTerrainColor, terrainMix);
+          }
+          
+          if (vElevation > 0.6) {
+            float highlightMix = smoothstep(0.6, 0.8, vElevation);
+            color = mix(color, uHighlightColor, highlightMix * 0.5);
+          }
+          
+          float glow = pow(vElevation, 2.0) * 0.2;
+          color += glow * uHighlightColor * 0.3;
+
+          float fresnel = pow(1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0))), 2.0);
+          color += fresnel * 0.15 * uHighlightColor;
+
+          float pulse = sin(uTime * 1.5) * 0.5 + 0.5;
+          if (vElevation > 0.3) {
+            color += vElevation * pulse * 0.05 * uHighlightColor;
+          }
+
+          float alpha = 0.2 + vElevation * 0.5;
+          
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    })
+  }, [normalMap, displacementMap, specularMap])
+
+  // Define Atmosphere material
+  const atmosphereMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        uSize: { value: 10.0 },
+        uColor: { value: new THREE.Color('#4fc1ff') },
+        uTime: { value: 0 },
+        uDisplacementMap: { value: displacementMap },
+        uDisplacementScale: { value: 0.4 }
+      },
+      vertexShader: `
+        uniform float uSize;
+        uniform float uTime;
+        uniform sampler2D uDisplacementMap;
+        uniform float uDisplacementScale;
+        
+        varying float vElevation;
+        
+        void main() {
+          vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+          vec2 uv = uv;
+          float elevation = texture2D(uDisplacementMap, uv).r;
+          vElevation = elevation;
+          vec3 displaced = position + normal * elevation * uDisplacementScale * 1.5;
+          vec4 viewPosition = viewMatrix * modelMatrix * vec4(displaced, 1.0);
+          gl_Position = projectionMatrix * viewPosition;
+          float sizeVariation = 1.0 + elevation * 3.0;
+          float pulseSize = sin(uTime + elevation * 5.0) * 0.3 + 1.0;
+          gl_PointSize = uSize * sizeVariation * pulseSize * (1.0 / -viewPosition.z);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        uniform float uTime;
+        
+        varying float vElevation;
+        
+        void main() {
+          float strength = distance(gl_PointCoord, vec2(0.5));
+          strength = 1.0 - strength;
+          strength = pow(strength, 2.0);
+          
+          float alpha = 0.15 * strength;
+          
+          if (vElevation > 0.2) {
+            alpha *= (1.0 + vElevation * 2.0);
+          }
+          
+          float pulse = sin(uTime * 1.0 + vElevation * 8.0) * 0.5 + 0.5;
+          alpha *= (0.8 + pulse * 0.3);
+          
+          gl_FragColor = vec4(uColor, alpha);
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    })
+  }, [displacementMap])
+
   return (
     <group position={[0, 0, -8]} scale={2}>
-      {/* Inner orbit group */}
-      <group rotation-x={Math.PI * 0.1}>
-        <OrbitLine radius={2.3} />
-        <Satellite orbitRadius={2.3} speed={1.2} offset={0} size={0.03} />
-        <Satellite orbitRadius={2.3} speed={1.2} offset={Math.PI * 0.5} size={0.02} />
-        <Satellite orbitRadius={2.3} speed={1.2} offset={Math.PI} size={0.03} />
-        <Satellite orbitRadius={2.3} speed={1.2} offset={Math.PI * 1.5} size={0.02} />
-      </group>
+      <Moon />
       
-      {/* Middle orbit group */}
-      <group rotation-x={-Math.PI * 0.15}>
-        <OrbitLine radius={2.5} />
-        <Satellite orbitRadius={2.5} speed={0.8} offset={0} size={0.025} />
-        <Satellite orbitRadius={2.5} speed={0.8} offset={Math.PI * 0.4} size={0.02} />
-        <Satellite orbitRadius={2.5} speed={0.8} offset={Math.PI * 0.8} size={0.03} />
-        <Satellite orbitRadius={2.5} speed={0.8} offset={Math.PI * 1.2} size={0.02} />
-        <Satellite orbitRadius={2.5} speed={0.8} offset={Math.PI * 1.6} size={0.025} />
-      </group>
-      
-      {/* Outer orbit group */}
-      <group rotation-x={Math.PI * 0.2}>
-        <OrbitLine radius={2.5} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={0} size={0.035} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={Math.PI * 0.33} size={0.02} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={Math.PI * 0.66} size={0.025} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={Math.PI} size={0.03} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={Math.PI * 1.33} size={0.025} />
-        <Satellite orbitRadius={2.5} speed={0.5} offset={Math.PI * 1.66} size={0.02} />
-      </group>
+      {/* Optimize lights */}
+      <ambientLight intensity={0.2} />
+      <directionalLight 
+        position={[5, 3, 5]} 
+        intensity={0.8}
+        color="#4fc1ff"
+        castShadow={false} // Disable shadows for better performance
+      />
+      <directionalLight
+        position={[-5, -3, -5]} 
+        intensity={0.4}
+        color="#001e3c"
+      />
+      <pointLight
+        position={[0, 0, 5]} 
+        intensity={0.6}
+        color="#7dd2ff"
+        distance={10}
+      />
 
-      {/* Additional tilted orbit */}
-      <group rotation-x={-Math.PI * 0.25}>
-        <OrbitLine radius={2.4} />
-        <Satellite orbitRadius={2.4} speed={1} offset={0} size={0.025} />
-        <Satellite orbitRadius={2.4} speed={1} offset={Math.PI * 0.5} size={0.02} />
-        <Satellite orbitRadius={2.4} speed={1} offset={Math.PI} size={0.03} />
-        <Satellite orbitRadius={2.4} speed={1} offset={Math.PI * 1.5} size={0.02} />
-      </group>
+      {ORBIT_CONFIG.map((config, index) => (
+        <group key={index} rotation-x={config.rotation}>
+          <OrbitLine radius={config.radius} />
+          <Satellites orbitConfig={config} />
+        </group>
+      ))}
 
-      {/* Original Earth components */}
-      <points ref={dotsRef}>
-        <sphereGeometry args={[2.1, 64, 64]} />
-        <pointsMaterial
-          size={0.05}
-          color="#4fc1ff"
-          transparent
-          opacity={0.8}
-          sizeAttenuation={true}
-        />
+      <points ref={dotsRef} geometry={atmosphereGeometry}>
+        <primitive object={atmosphereMaterial} />
       </points>
 
-      <mesh ref={earthRef}>
-        <sphereGeometry args={[2, 128, 128]} />
-        <shaderMaterial
-          transparent
-          uniforms={{
-            uTime: { value: 0 },
-            uColorA: { value: new THREE.Color('#00ffff') },  // Try different colors
-            uColorB: { value: new THREE.Color('#0033ff') },  // Try different colors
-            uNormalMap: { value: normalMap },
-            uNormalScale: { value: 1.5 }
-          }}
-          vertexShader={`
-            varying vec2 vUv;
-            varying vec3 vNormal;
-            varying vec3 vPosition;
-            varying vec3 vViewPosition;
-            
-            void main() {
-              vUv = uv;
-              vNormal = normalize(normalMatrix * normal);
-              vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-              vViewPosition = -mvPosition.xyz;
-              vPosition = position;
-              gl_Position = projectionMatrix * mvPosition;
-            }
-          `}
-          fragmentShader={`
-            uniform float uTime;
-            uniform vec3 uColorA;
-            uniform vec3 uColorB;
-            uniform sampler2D uNormalMap;
-            uniform float uNormalScale;
-            
-            varying vec2 vUv;
-            varying vec3 vNormal;
-            varying vec3 vPosition;
-            varying vec3 vViewPosition;
-
-            vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm, vec2 uv ) {
-              vec3 q0 = dFdx( eye_pos.xyz );
-              vec3 q1 = dFdy( eye_pos.xyz );
-              vec2 st0 = dFdx( uv.st );
-              vec2 st1 = dFdy( uv.st );
-
-              vec3 S = normalize( q0 * st1.t - q1 * st0.t );
-              vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
-              vec3 N = normalize( surf_norm );
-
-              vec3 mapN = texture2D( uNormalMap, uv ).xyz * 2.0 - 1.0;
-              mapN.xy = uNormalScale * mapN.xy;
-              
-              mat3 tsn = mat3( S, T, N );
-              return normalize( tsn * mapN );
-            }
-
-            float noise(vec2 p) {
-              return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
-            }
-            
-            void main() {
-              // Calculate modified normal
-              vec3 normal = perturbNormal2Arb(vViewPosition, vNormal, vUv);
-              
-              float gradientY = (vPosition.y + 2.0) / 4.0;
-              float gradientX = (vPosition.x + 2.0) / 4.0;
-              
-              float wave = sin(gradientY * 10.0 + uTime) * 0.5 + 0.5;
-              float wave2 = cos(gradientX * 8.0 - uTime * 0.5) * 0.5 + 0.5;
-              
-              float gradient = mix(wave, wave2, 0.5);
-              
-              // Use normal map for additional color variation
-              float normalStrength = length(normal.xy);
-              vec3 color = mix(uColorB, uColorA, gradient + normalStrength * 0.2);
-              
-              float n = noise(vUv + uTime * 0.1);
-              float fresnel = pow(1.0 - dot(normal, normalize(vViewPosition)), 3.0);
-              float alpha = mix(0.1, 0.6, fresnel) * (0.8 + n * 0.2);
-              alpha *= 0.8 + sin(uTime) * 0.1;
-              
-              float scanLine = step(0.5, fract(vPosition.y * 20.0 + uTime));
-              alpha *= 0.8 + scanLine * 0.2;
-              
-              gl_FragColor = vec4(color, alpha);
-            }
-          `}
-        />
+      <mesh ref={earthRef} geometry={earthGeometry}>
+        <primitive object={earthMaterial} />
       </mesh>
 
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[2.2, 32, 32]} />
-        <meshPhongMaterial
+      <mesh ref={glowRef} geometry={glowGeometry}>
+        <meshStandardMaterial
           color="#4fc1ff"
-          opacity={0.3}
+          opacity={0.08}
           transparent
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
-          blur={0.8}
+          emissive="#4fc1ff"
+          emissiveIntensity={0.4}
+          depthWrite={false}
         />
       </mesh>
     </group>
   )
 }
 
-export function Earth() {
+// Optimize Earth export component
+export const Earth = memo(() => {
   return (
     <Suspense fallback={null}>
       <EarthWithTextures />
     </Suspense>
   )
-} 
+}) 

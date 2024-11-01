@@ -39,8 +39,10 @@ body {
 }
 
 /* Custom cursor */
-* {
-  cursor: none;
+@media (min-width: 768px) {
+  * {
+    cursor: none;
+  }
 }
 
 .cursor-dot {
@@ -165,4 +167,18 @@ nav {
 button:hover {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Add these rules to improve text rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* For animated elements */
+.gsap-text {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
