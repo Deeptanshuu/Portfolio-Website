@@ -1,29 +1,55 @@
 /* eslint-disable react/no-unescaped-entities */
 import { AnimatedText } from '../AnimatedText'
 import { useState, useEffect } from 'react'
+import { Logo } from './Logo'
 
 export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
+      {/* Logo */}
+      <div className="absolute top-16 left-[4rem]">
+        <Logo />
+      </div>
+
       {/* Time Display */}
       <Clock />
       
-      {/* Animated lines */}
+      {/* Animated lines with plus sign */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 top-0 w-px h-full 
           bg-gradient-to-b from-transparent via-white to-transparent" />
         
         <div className="absolute bottom-1/3 sm:bottom-1/4 left-0 h-px w-full 
           bg-gradient-to-r from-transparent via-white to-transparent" />
+          
+        {/* Plus sign at intersection*/}
+        <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 bottom-1/3 sm:bottom-1/4
+          w-6 h-6 -translate-x-[12px] -translate-y-[-10px]">
+          <span className="absolute w-6 h-[2px] bg-white top-1/2 -translate-y-[1px]"></span>
+          <span className="absolute h-6 w-[2px] bg-white left-1/2 -translate-x-[1px]"></span>
+        </div>
       </div>
       
       <div className="max-w-screen-xl w-full mx-auto relative">
         <div className="space-y-3 sm:space-y-5 p-10 md:p-0">
           <div>
-            <h1 className="text-white text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
-              font-thin tracking-tighter overflow-hidden leading-tight">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
+              font-normal tracking-tighter overflow-hidden leading-tight">
               <AnimatedText delay={0.2}>
-                Hi I'm<br className="sm:hidden" /> Deeptanshu,
+                <span
+                  className="block"
+                  style={{ 
+                    background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
+                    backgroundSize: '200% auto',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textShadow: '0 0 30px rgba(255,255,255,0.1)',
+                    animation: 'gradient 3s linear infinite'
+                  }}
+                >
+                  Hi I'm<br className="sm:hidden" /> Deeptanshu,
+                </span>
               </AnimatedText>
             </h1>
             
@@ -75,15 +101,15 @@ function RolesList() {
     <div className="flex flex-col sm:flex-row items-start sm:items-center 
       gap-2 sm:gap-6 mt-3 sm:mt-6 
       text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
-      overflow-hidden">
+      overflow-visible">
       <AnimatedText delay={0.4}>
-        <span className="font-normal text-white font-mono">Developer</span>
+        <span className="font-normal text-white">Developer</span>
       </AnimatedText>
       
       <span className="hidden sm:block text-white/40">|</span>
       
       <AnimatedText delay={0.6}>
-        <span className="text-white cursive">
+        <span className="text-white font-medium cursive">
           Designer
         </span>
       </AnimatedText>
@@ -91,7 +117,7 @@ function RolesList() {
       <span className="hidden sm:block text-white/40">|</span>
       
       <AnimatedText delay={0.8}>
-        <span className="text-white/60 font-light font-serif">
+        <span className="text-white/80 font-light">
           Creator
         </span>
       </AnimatedText>
@@ -101,10 +127,9 @@ function RolesList() {
 
 function Description() {
   return (
-    <div className="overflow-hidden cursive max-w-[90%] sm:max-w-2xl">
+    <div className="overflow-hidden max-w-[90%] sm:max-w-2xl">
       <AnimatedText delay={0.8} className="
-        text-transparent bg-clip-text bg-gradient-to-r 
-        from-white/60 to-white/40
+        text-transparent bg-clip-text bg-white/100
         text-base sm:text-lg md:text-xl lg:text-2xl 
         font-light tracking-wide
         leading-relaxed

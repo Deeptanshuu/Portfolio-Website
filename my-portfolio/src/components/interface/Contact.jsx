@@ -31,12 +31,25 @@ export function Contact() {
       <div className="max-w-screen-xl mx-auto px-8">
         {/* Main Content */}
         <div className="text-right mb-24">
-          <div className="overflow-hidden">
-            <AnimatedText className="text-white text-8xl font-bold">
-              Let&apos;s work together
+          <div className="overflow-visible">
+            <AnimatedText>
+              <span
+                className="text-8xl font-bold block"
+                style={{ 
+                  background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '0 0 30px rgba(255,255,255,0.1)',
+                  animation: 'gradient 3s linear infinite'
+                }}
+              >
+                Let&apos;s work together
+              </span>
             </AnimatedText>
           </div>
-          <div className="overflow-hidden">
+          <div className="overflow-visible">
             <AnimatedText delay={0.2}>
               <a 
                 href="mailto:your@email.com"
@@ -50,9 +63,9 @@ export function Contact() {
         </div>
 
         {/* Footer with Social Links and Resume */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-24 border-t border-white/10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-4">
           {/* Social Links */}
-          <div className="flex gap-6">
+          <div className="flex gap-6 scale-150">
             {socialLinks.map((social, index) => (
               <AnimatedText key={social.label} delay={0.1 * index}>
                 <a
@@ -73,14 +86,14 @@ export function Contact() {
             <a
               href="/resume.pdf"
               download
-              className="group flex items-center gap-2 px-6 py-3 rounded-full
+              className="group flex items-center gap-2 px-7 py-3 rounded-full
                 bg-white/5 hover:bg-white/10
                 border border-white/10 hover:border-white/20
                 text-white/60 hover:text-white
                 transition-all duration-300"
             >
               <span>Download Resume</span>
-              <ArrowDownTrayIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-y-0.5" />
+              <ArrowDownTrayIcon className="w-5 h-5 ml-2 mb-0.5 transition-transform duration-300 group-hover:translate-y-0.5" />
             </a>
           </AnimatedText>
         </div>

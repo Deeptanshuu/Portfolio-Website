@@ -14,7 +14,7 @@ export function NavigationLinks({ navItems, activeSection, scrollToSection, isMe
           `}
         >
           <span className={`
-            text-7xl font-light transition-all duration-500
+            text-7xl font-semibold transition-all duration-500
             ${activeSection === id ? 'text-white' : 'text-white/40'}
             group-hover:text-white group-hover:-translate-y-full block
           `}>
@@ -22,7 +22,7 @@ export function NavigationLinks({ navItems, activeSection, scrollToSection, isMe
           </span>
           <span className={`
             absolute top-full left-0
-            text-7xl font-light transition-all duration-500
+            text-7xl font-semibold transition-all duration-500
             ${activeSection === id ? 'text-white' : 'text-white/40'}
             group-hover:text-white group-hover:-translate-y-full block
           `}>
@@ -48,7 +48,7 @@ function ResumeButton({ isMenuOpen }) {
       `}
     >
       <span className="
-        text-7xl font-light transition-all duration-500
+        text-7xl font-semibold transition-all duration-500
         text-white/40
         group-hover:text-white group-hover:-translate-y-full block
       ">
@@ -56,13 +56,13 @@ function ResumeButton({ isMenuOpen }) {
       </span>
       <span className="
         absolute top-full left-0
-        text-7xl font-light transition-all duration-500
+        text-7xl font-semibold transition-all duration-500
         text-white/40
         group-hover:text-white group-hover:-translate-y-full block
       ">
         Resume
       </span>
-      <ArrowDownTrayIcon className="w-8 h-8 text-white/40 group-hover:text-white transition-colors" />
+      <ArrowDownTrayIcon className="w-16 h-16 text-white/40 group-hover:text-white transition-colors" />
     </a>
   )
 } 

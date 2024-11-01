@@ -6,7 +6,7 @@ const projects = [
     title: "Google Developer Student Club Leaderboard",
     description: "A leaderboard for the Google Developer Student Club that showcases members' achievements and progress in a visually engaging manner for Hacktoberfest 2024.",
     image: "/projects/leaderboard.jpg",
-    tags: ["Vue.js", "D3.js", "Firebase"],
+    tags: ["React.js", "Chakra UI", "MongoDB", "AWS"],
     link: "https://gdsc-rait.vercel.app/"
   },
   {
@@ -44,17 +44,30 @@ export function Projects() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-blue-950/10 to-black/0 pointer-events-none" />
       
-      <div className="max-w-screen-xl mx-auto px-8">
+      <div className="max-w-screen mx-auto ">
         {/* Section Header */}
         <div className="text-center mb-24">
           <div className="overflow-hidden">
-            <AnimatedText className="text-white/80 text-sm font-light mb-4 uppercase tracking-widest">
+            <AnimatedText className="text-white/80 text-2xl font-light mb-4 uppercase tracking-widest">
               Featured Work
             </AnimatedText>
           </div>
           <div className="overflow-hidden">
-            <AnimatedText className="text-white text-5xl font-bold">
-              Recent Projects
+            <AnimatedText>
+              <span
+                className="text-8xl font-bold block"
+                style={{ 
+                  background: 'linear-gradient(90deg, #fff, #4fc1ff, #fff)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '0 0 30px rgba(255,255,255,0.1)',
+                  animation: 'gradient 3s linear infinite'
+                }}
+              >
+                Recent Projects
+              </span>
             </AnimatedText>
           </div>
         </div>

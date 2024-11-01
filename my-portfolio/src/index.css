@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add Satoshi font faces */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
+       url('/fonts/Satoshi/Satoshi-Variable.woff') format('woff');
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi-VariableItalic.woff2') format('woff2'),
+       url('/fonts/Satoshi/Satoshi-VariableItalic.woff') format('woff');
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: italic;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +29,7 @@
 
 body {
   background: black;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Satoshi', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -123,9 +142,12 @@ nav {
 
 /* Gradient animations */
 @keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* Responsive text adjustments */

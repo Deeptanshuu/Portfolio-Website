@@ -7,9 +7,9 @@ import { SocialLinks } from './SocialLinks'
 
 const navItems = [
   { id: 'home', label: 'Home', offset: 0 },
-  { id: 'projects', label: 'Projects', offset: 1.6 },
-  { id: 'skills', label: 'Skills', offset: 4.6 },
-  { id: 'contact', label: 'Contact', offset: 5.5 }
+  { id: 'projects', label: 'Projects', offset: 1.2 },
+  { id: 'skills', label: 'Skills', offset: 6 },
+  { id: 'contact', label: 'Contact', offset: 7 }
 ]
 
 const socialLinks = [

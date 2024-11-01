@@ -18,7 +18,7 @@ export default function App() {
         }}
       >
         <Suspense fallback={null}>
-          <ScrollControls pages={5.5} damping={0.1}>
+          <ScrollControls pages={7} damping={0.1}>
             <Hero />
             <Scroll html>
               <Interface />

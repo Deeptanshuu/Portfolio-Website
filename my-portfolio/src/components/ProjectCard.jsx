@@ -4,7 +4,7 @@ import { AnimatedText } from './AnimatedText'
 import gsap from 'gsap'
 
 export function ProjectCard({ project, index, isEven, onClick }) {
-  const cardRef = useRef(null)
+  const sectionRef = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,32 +24,32 @@ export function ProjectCard({ project, index, isEven, onClick }) {
       { threshold: 0.1 }
     )
 
-    if (cardRef.current) {
-      gsap.set(cardRef.current, { y: 100, opacity: 0 })
-      observer.observe(cardRef.current)
+    if (sectionRef.current) {
+      gsap.set(sectionRef.current, { y: 100, opacity: 0 })
+      observer.observe(sectionRef.current)
     }
 
     return () => observer.disconnect()
   }, [index])
 
   return (
-    <div
-      ref={cardRef}
-      className="group relative bg-white/[0.01] rounded-3xl border border-white/[0.05] p-8 hover:border-white/[0.1] transition-colors duration-700"
+    <section
+      ref={sectionRef}
+      className="group border-t border-white/10 last:border-b py-24 first:pt-0"
     >
-      <div className={`flex flex-col lg:flex-row gap-12 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+      <div className={`flex flex-col lg:flex-row gap-16 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
         {/* Content */}
-        <div className="lg:w-1/2 space-y-8">
+        <div className="lg:w-1/2 space-y-8 space-x-8 px-10">
           <div className="space-y-4">
-            <div className="overflow-hidden">
-              <AnimatedText delay={0.1} className="text-white/90 text-3xl font-light">
-                {project.title}
+            <div className="overflow-clip">
+              <AnimatedText delay={0.1} className="text-white/90 text-4xl font-normal">
+                {project.title}<br/>
               </AnimatedText>
             </div>
             
             <div className="overflow-hidden">
-              <AnimatedText delay={0.2} className="text-white/60 text-lg leading-relaxed">
-                {project.description}
+              <AnimatedText delay={0.2} className="text-white/90 text-lg leading-relaxed font-normal">
+                {project.description}<br/>
               </AnimatedText>
             </div>
           </div>
@@ -58,7 +58,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
             {project.tags.map((tag, i) => (
               <span
                 key={i}
-                className="text-sm px-4 py-2 bg-white/[0.03] rounded-full text-white/40 border border-white/[0.05]"
+                className="text-sm px-4 py-2 rounded-full text-white/70 border border-white/50"
               >
                 {tag}
               </span>
@@ -69,9 +69,8 @@ export function ProjectCard({ project, index, isEven, onClick }) {
             <AnimatedText delay={0.3}>
               <button
                 onClick={onClick}
-                className="group/button relative z-[100000] px-8 py-3 rounded-full 
-                  bg-transparent
-                  border border-white/20
+                className="group/button relative px-8 py-3 rounded-full 
+                  border border-white/50
                   text-white/60
                   transition-all duration-300
                   hover:border-white/40 hover:text-white/90
@@ -96,7 +95,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
         </div>
 
         {/* Image */}
-        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.05]">
+        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-sm pt-10 pl-10 pr-10 overflow-hidden">
           <img
             src={project.image}
             alt={project.title}
@@ -107,11 +106,11 @@ export function ProjectCard({ project, index, isEven, onClick }) {
 
       {/* Hover gradient */}
       <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl pointer-events-none"
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at ${isEven ? '75%' : '25%'} 50%, rgba(255,255,255,0.03) 0%, transparent 70%)`
+          background: `radial-gradient(circle at ${isEven ? '75%' : '25%'} 50%, rgba(255,255,255,0.02) 0%, transparent 70%)`
         }}
       />
-    </div>
+    </section>
   )
 } 
