@@ -210,6 +210,72 @@ const LocationMarker = memo(({ position }) => {
   )
 })
 
+// Add these constants near the top with other configurations
+const ISS_CONFIG = {
+  radius: 2.2,  // Slightly closer to Earth than other satellites
+  speed: 0.15,  // Slowed down significantly (about one orbit per ~40 seconds)
+  size: 0.06,   // Slightly larger than regular satellites
+  inclination: Math.PI * 0.23, // ~51.6 degrees orbital inclination
+  color: '#00ff88'
+}
+
+// Add this new component for the ISS
+const ISS = memo(() => {
+  const issRef = useRef()
+  const issGlowRef = useRef()
+  
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime() * ISS_CONFIG.speed
+    
+    // Calculate position with orbital inclination
+    const x = Math.cos(t) * ISS_CONFIG.radius
+    const z = Math.sin(t) * ISS_CONFIG.radius
+    const y = Math.sin(t) * Math.sin(ISS_CONFIG.inclination) * ISS_CONFIG.radius * 0.8
+    
+    issRef.current.position.set(x, y, z)
+    issGlowRef.current.position.set(x, y, z)
+    
+    // Rotate ISS to face its direction of travel
+    issRef.current.rotation.y = t
+  })
+
+  return (
+    <group>
+      {/* ISS Orbit Line */}
+      <mesh rotation-x={ISS_CONFIG.inclination}>
+        <ringGeometry args={[ISS_CONFIG.radius - 0.005, ISS_CONFIG.radius + 0.005, 128]} />
+        <meshBasicMaterial
+          color={ISS_CONFIG.color}
+          transparent
+          opacity={0.3}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      
+      {/* ISS Body */}
+      <mesh ref={issRef}>
+        <boxGeometry args={[ISS_CONFIG.size, ISS_CONFIG.size * 0.4, ISS_CONFIG.size * 0.4]} />
+        <meshStandardMaterial
+          color={ISS_CONFIG.color}
+          emissive={ISS_CONFIG.color}
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+      
+      {/* ISS Glow Effect */}
+      <mesh ref={issGlowRef}>
+        <sphereGeometry args={[ISS_CONFIG.size * 1.2, 16, 16]} />
+        <meshBasicMaterial
+          color={ISS_CONFIG.color}
+          transparent
+          opacity={0.3}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+    </group>
+  )
+})
+
 function EarthWithTextures() {
   // Add missing refs
   const earthRef = useRef()
@@ -369,6 +435,7 @@ function EarthWithTextures() {
   return (
     <group position={[0, 0, -8]} scale={2}>
       <Moon />
+      <ISS />
       
       {/* Optimize lights */}
       <ambientLight intensity={0.2} />
