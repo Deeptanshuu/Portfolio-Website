@@ -43,10 +43,11 @@ export function Hero() {
       </div>
       
       <div className="max-w-screen-xl w-full mx-auto relative">
+        {/* Adjusted vertical positioning */}
         <div className="space-y-3 sm:space-y-5 md:p-0">
           <div>
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
-              font-normal tracking-tighter overflow-hidden leading-tight">
+              font-[530] tracking-tighter overflow-hidden leading-tight">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
                   Hi I&apos;m <span className="ml-1 sm:ml-1" /> 
