@@ -1,45 +1,54 @@
 /* eslint-disable react/prop-types */
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { AnimatedText } from './AnimatedText'
 import gsap from 'gsap'
 
 export function ProjectCard({ project, index, isEven, onClick }) {
   const sectionRef = useRef(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            gsap.to(entry.target, {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: 'power3.out',
-              delay: index * 0.2
-            })
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
+    // Only apply GSAP animations on desktop
+    if (window.innerWidth >= 1024) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              gsap.to(entry.target, {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power3.out',
+                delay: index * 0.2
+              })
+            }
+          })
+        },
+        { threshold: 0.1 }
+      )
 
-    if (sectionRef.current) {
-      gsap.set(sectionRef.current, { y: 100, opacity: 0 })
-      observer.observe(sectionRef.current)
+      if (sectionRef.current) {
+        gsap.set(sectionRef.current, { y: 100, opacity: 0 })
+        observer.observe(sectionRef.current)
+      }
+
+      return () => observer.disconnect()
+    } else {
+      // Simple fade-in for mobile
+      if (sectionRef.current) {
+        gsap.set(sectionRef.current, { opacity: 1, y: 0 })
+      }
     }
-
-    return () => observer.disconnect()
   }, [index])
 
   return (
     <section
       ref={sectionRef}
-      className="group border-t border-white/10 last:border-b py-24 first:pt-0"
+      className="group border-t border-white/10 last:border-b py-12 lg:py-24 first:pt-0"
     >
-      <div className={`flex flex-col lg:flex-row gap-16 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+      <div className={`flex flex-col lg:flex-row gap-8 lg:gap-16 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
         {/* Content */}
-        <div className="lg:w-1/2 space-y-8 space-x-8 px-10">
+        <div className="lg:w-1/2 space-y-6 lg:space-y-8 px-6 lg:px-10">
           <div className="space-y-4">
             <div className="overflow-clip">
               <AnimatedText delay={0.1} className="text-white/90 text-4xl font-normal">
@@ -95,22 +104,31 @@ export function ProjectCard({ project, index, isEven, onClick }) {
         </div>
 
         {/* Image */}
-        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-sm pt-10 pl-10 pr-10 overflow-hidden">
+        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-sm pt-5 lg:pt-10 px-6 lg:px-10 overflow-hidden relative">
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-white/5 animate-pulse" />
+          )}
           <img
             src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-full object-cover lg:group-hover:scale-105 lg:transition-transform lg:duration-700 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         </div>
       </div>
 
-      {/* Hover gradient */}
-      <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at ${isEven ? '75%' : '25%'} 50%, rgba(255,255,255,0.02) 0%, transparent 70%)`
-        }}
-      />
+      {/* Hover gradient - only show on desktop */}
+      {window.innerWidth >= 1024 && (
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${isEven ? '75%' : '25%'} 50%, rgba(255,255,255,0.02) 0%, transparent 70%)`
+          }}
+        />
+      )}
     </section>
   )
 } 
