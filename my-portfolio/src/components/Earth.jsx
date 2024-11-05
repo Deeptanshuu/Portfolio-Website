@@ -296,7 +296,7 @@ function EarthWithTextures() {
 
   // Optimize frame updates with RAF limiting
   const frameCount = useRef(0)
-  const FPS_LIMIT = 60
+  const FPS_LIMIT = 30
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor }) => {

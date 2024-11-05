@@ -8,37 +8,40 @@ export function ProjectCard({ project, index, isEven, onClick }) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    // Only apply GSAP animations on desktop
-    if (window.innerWidth >= 1024) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              gsap.to(entry.target, {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                ease: 'power3.out',
-                delay: index * 0.2
-              })
-            }
-          })
-        },
-        { threshold: 0.1 }
-      )
-
+    const isMobile = window.innerWidth < 1024;
+    
+    // Disable all animations on mobile
+    if (isMobile) {
       if (sectionRef.current) {
-        gsap.set(sectionRef.current, { y: 100, opacity: 0 })
-        observer.observe(sectionRef.current)
+        gsap.set(sectionRef.current, { opacity: 1, y: 0 });
       }
-
-      return () => observer.disconnect()
-    } else {
-      // Simple fade-in for mobile
-      if (sectionRef.current) {
-        gsap.set(sectionRef.current, { opacity: 1, y: 0 })
-      }
+      return; // Exit early for mobile devices
     }
+
+    // Desktop animation logic
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.to(entry.target, {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: 'power3.out',
+              delay: index * 0.2
+            })
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (sectionRef.current) {
+      gsap.set(sectionRef.current, { y: 100, opacity: 0 })
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
   }, [index])
 
   return (
@@ -79,11 +82,15 @@ export function ProjectCard({ project, index, isEven, onClick }) {
               <button
                 onClick={onClick}
                 className="group/button relative px-8 py-3 rounded-full 
-                  border border-white/50
-                  text-white/60
+                  bg-white/10 backdrop-blur-sm
+                  border border-white/20
+                  text-white/90
                   transition-all duration-300
-                  hover:border-white/40 hover:text-white/90
-                  flex items-center gap-2"
+                  hover:bg-white/20 hover:border-white/30 hover:text-white
+                  active:scale-95
+                  flex items-center gap-2
+                  shadow-[0_0_15px_rgba(255,255,255,0.05)]
+                  hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]"
               >
                 <span>View Project</span>
                 <svg 
