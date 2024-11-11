@@ -10,6 +10,13 @@ const projects = [
     link: "https://gdsc-rait.vercel.app/"
   },
   {
+    title: "AI Resume Screener",
+    description: "A resume screener that uses AI to analyze resumes and provide feedback. BERT model is used for the analysis and spacy for text processing.",
+    image: "/projects/resume.png",
+    tags: ["React.js", "Tailwind", "MongoDB"],
+    link: "https://github.com/Deeptanshuu/Resume-Screening-System-ML"
+  },
+  {
     title: "Tsuki Market : E-Commerce Platform",
     description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time inventory management, seamless checkout process, and stunning product visualizations enhanced by Framer Motion animations.",
     image: "/projects/e-com.jpg",
@@ -17,18 +24,18 @@ const projects = [
     link: "https://tsukimarket.vercel.app/"
   },
   {
-    title: "AI/ML based Recipe Recommendation System",
+    title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",
     image: "/projects/recipe.jpg",
     tags: ["React.js", "Flask", "Python"],
-    link: "https://recipe-recommendation-system.vercel.app/"
+    link: "https://github.com/Deeptanshuu/Whats-for-dinner"
   },
   {
     title: "Fee Payment System",
     description: "A simple web application that uses simple UI and animations to make the fee payment process more intuitive and user-friendly.",
     image: "/projects/fee.jpg",
     tags: ["HTML", "CSS", "Express"],
-    link: "https://project1.com"
+    link: ""
   }
 ]
 
