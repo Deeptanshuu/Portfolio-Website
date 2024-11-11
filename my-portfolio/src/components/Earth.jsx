@@ -16,7 +16,7 @@ const ORBIT_CONFIG = [
 ]
 
 const MOON_CONFIG = {
-  radius: 4.5,
+  radius: 6.5,
   speed: 0.25,
   size: 0.3,
   color: '#ffffff'
@@ -296,12 +296,12 @@ function EarthWithTextures() {
 
   // Optimize frame updates with RAF limiting
   const frameCount = useRef(0)
-  const FPS_LIMIT = 30
+  const FPS_LIMIT = 60
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor }) => {
     frameCount.current++
-    if (frameCount.current % 2 !== 0) return // Skip every other frame
+    if (frameCount.current % 1 !== 0) return // Skip every other frame
 
     const time = clock.getElapsedTime()
     
@@ -433,29 +433,12 @@ function EarthWithTextures() {
   }, [normalMap, displacementMap, specularMap])
 
   return (
-    <group position={[0, 0, -8]} scale={2}>
+    <group position={[0, 0, -8]} scale={2.3333}>
       <Moon />
       <ISS />
       
       {/* Optimize lights */}
-      <ambientLight intensity={0.2} />
-      <directionalLight 
-        position={[5, 3, 5]} 
-        intensity={0.8}
-        color="#4fc1ff"
-        castShadow={false} // Disable shadows for better performance
-      />
-      <directionalLight
-        position={[-5, -3, -5]} 
-        intensity={0.4}
-        color="#001e3c"
-      />
-      <pointLight
-        position={[0, 0, 5]} 
-        intensity={0.6}
-        color="#7dd2ff"
-        distance={10}
-      />
+      <ambientLight intensity={1} />
 
       {ORBIT_CONFIG.map((config, index) => (
         <group key={index} rotation-x={config.rotation}>
