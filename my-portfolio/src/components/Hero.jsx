@@ -17,7 +17,7 @@ export function Hero() {
   useFrame((state) => {
     const time = state.clock.getElapsedTime()
     uniformsRef.current.uTime.value = time
-    mesh.current.position.y = Math.sin(time) * 0.1
+    mesh.current.position.y = Math.sin(time) * 0
   })
 
   return (

@@ -417,11 +417,6 @@ function EarthWithTextures() {
           float fresnel = pow(1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0))), 2.0);
           color += fresnel * 0.15 * uHighlightColor;
 
-          float pulse = sin(uTime * 1.5) * 0.5 + 0.5;
-          if (vElevation > 0.3) {
-            color += vElevation * pulse * 0.05 * uHighlightColor;
-          }
-
           float alpha = 0.2 + vElevation * 0.5;
           
           gl_FragColor = vec4(color, alpha);
@@ -433,7 +428,7 @@ function EarthWithTextures() {
   }, [normalMap, displacementMap, specularMap])
 
   return (
-    <group position={[0, 0, -8]} scale={2.3333}>
+    <group position={[0, 0, -8]} scale={1.8}>
       <Moon />
       <ISS />
       
@@ -491,8 +486,7 @@ function EarthWithTextures() {
               gl_Position = projectedPosition;
               
               float sizeVariation = 1.0 + elevation * 3.0;
-              float pulseSize = sin(uTime + elevation * 5.0) * 0.3 + 1.0;
-              gl_PointSize = uSize * sizeVariation * pulseSize * (1.0 / -viewPosition.z);
+              gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
             }
           `}
           fragmentShader={`
@@ -535,11 +529,7 @@ function EarthWithTextures() {
               
               color = mix(color, uOutlineColor, isOutline);
               
-              float pulse = sin(uTime * 1.5 + vElevation * 8.0) * 0.5 + 0.5;
-              color += pulse * uHighlightColor * vElevation * 0.4;
-              
               float alpha = strength * (0.6 + vElevation * 0.8);
-              alpha *= (0.9 + pulse * 0.3);
               alpha = mix(alpha, 1.0, isOutline * 0.5); // Make outline more visible
               
               if (strength < 0.1) discard;
