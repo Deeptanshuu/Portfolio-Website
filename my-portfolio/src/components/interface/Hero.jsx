@@ -12,8 +12,8 @@ export function Hero() {
       </div>
 
       {/* Status Message */}
-      <div className="absolute top-20 left-8 sm:left-32 md:left-48 lg:left-64">
-        <AnimatedText delay={0.8} className="text-white/80 text-lg font-light tracking-relaxed">
+      <div className="absolute top-24 left-6 sm:left-32 md:left-48 lg:left-64">
+        <AnimatedText delay={0.8} className="text-white/80 text-base font-light tracking-relaxed">
           <div className="flex items-center gap-2 px-2">
             <span className="relative flex h-3 w-3 pr-5">
               <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -46,8 +46,7 @@ export function Hero() {
         {/* Adjusted vertical positioning */}
         <div className="space-y-3 sm:space-y-5 md:p-0">
           <div>
-            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 
-              font-[530] tracking-tighter overflow-hidden leading-tight">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-[530] tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
                   Hi I&apos;m <span className="ml-1 sm:ml-1" /> 
@@ -97,8 +96,8 @@ function Clock() {
   }
 
   return (
-    <div className="absolute top-32 left-8 sm:left-32 md:left-48 lg:left-64">
-      <AnimatedText delay={1} className="text-white/80 text-xl font-light tracking-relaxed">
+    <div className="absolute top-32 left-6 sm:left-24 md:left-48 lg:left-64">
+      <AnimatedText delay={1} className="text-white/80 text-base font-light tracking-relaxed">
         <div className="flex flex-col gap-4">
           <span className="text-white/40 px-2">It's</span>
           <span>{formatTime(time)}</span>
