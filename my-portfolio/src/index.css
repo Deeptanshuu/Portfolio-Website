@@ -182,3 +182,22 @@ button:hover {
   backface-visibility: hidden;
   transform: translateZ(0);
 }
+
+
+::selection {
+  background-color: #ffffff81; 
+  color: black; 
+}
+
+/* Add these rules to your existing index.css */
+.text-container {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Ensure proper text rendering */
+p, h1, h2, h3, h4, h5, h6 {
+  max-width: 100%;
+  word-break: normal;
+}

@@ -9,10 +9,10 @@ import { InstancedMesh, Object3D } from 'three'
 
 // Move static configurations outside without useMemo
 const ORBIT_CONFIG = [
-  { radius: 2.3, speed: 1.2, count: 4, rotation: Math.PI * 0.1 },
-  { radius: 2.5, speed: 0.8, count: 5, rotation: -Math.PI * 0.15 },
-  { radius: 2.5, speed: 0.5, count: 6, rotation: Math.PI * 0.2 },
-  { radius: 2.4, speed: 1.0, count: 4, rotation: -Math.PI * 0.25 }
+  { radius: 2.3, speed: 1.2, count: 3, rotation: Math.PI * 0.1 },
+  { radius: 2.5, speed: 0.8, count: 4, rotation: -Math.PI * 0.15 },
+  { radius: 2.5, speed: 0.5, count: 4, rotation: Math.PI * 0.2 },
+  { radius: 2.4, speed: 1.0, count: 3, rotation: -Math.PI * 0.25 }
 ]
 
 const MOON_CONFIG = {
@@ -350,9 +350,9 @@ function EarthWithTextures() {
         uSpecularMap: { value: specularMap },
         uNormalScale: { value: 10.0 },
         uDisplacementScale: { value: 0.45 },
-        uOceanColor: { value: new THREE.Color('#001e3c') },
-        uTerrainColor: { value: new THREE.Color('#4fc1ff') },
-        uHighlightColor: { value: new THREE.Color('#7dd2ff') }
+        uOceanColor: { value: new THREE.Color('#003366') },
+        uTerrainColor: { value: new THREE.Color('#66ccff') },
+        uHighlightColor: { value: new THREE.Color('#ffffff') }
       },
       vertexShader: `
         uniform float uTime;
@@ -408,16 +408,16 @@ function EarthWithTextures() {
           
           if (vElevation > 0.6) {
             float highlightMix = smoothstep(0.6, 0.8, vElevation);
-            color = mix(color, uHighlightColor, highlightMix * 0.5);
+            color = mix(color, uHighlightColor, highlightMix * 0.7);
           }
           
-          float glow = pow(vElevation, 2.0) * 0.2;
-          color += glow * uHighlightColor * 0.3;
+          float glow = pow(vElevation, 2.0) * 0.3;
+          color += glow * uHighlightColor * 0.4;
 
           float fresnel = pow(1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0))), 2.0);
-          color += fresnel * 0.15 * uHighlightColor;
+          color += fresnel * 0.25 * uHighlightColor;
 
-          float alpha = 0.2 + vElevation * 0.5;
+          float alpha = 0.4 + vElevation * 0.6;
           
           gl_FragColor = vec4(color, alpha);
         }
@@ -428,7 +428,7 @@ function EarthWithTextures() {
   }, [normalMap, displacementMap, specularMap])
 
   return (
-    <group position={[0, 0, -8]} scale={1.8}>
+    <group position={[0, 0, -8]} scale={1.75}>
       <Moon />
       <ISS />
       
@@ -443,18 +443,19 @@ function EarthWithTextures() {
       ))}
 
       <points ref={earthRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+        {/* Dots */}
         <shaderMaterial
           transparent={true}
           uniforms={{
             uTime: { value: 5 },
-            uSize: { value: 15.0 },
+            uSize: { value: 18.0 },
             uDisplacementMap: { value: displacementMap },
             uDisplacementScale: { value: 0.55 },
-            uOceanColor: { value: new THREE.Color('#002a56') },
-            uTerrainColor: { value: new THREE.Color('#5fd3ff') },
-            uHighlightColor: { value: new THREE.Color('#99e6ff') },
+            uOceanColor: { value: new THREE.Color('#003366') },
+            uTerrainColor: { value: new THREE.Color('#66ccff') },
+            uHighlightColor: { value: new THREE.Color('#ffffff') },
             uOutlineColor: { value: new THREE.Color('#ffffff') },
-            uOutlineStrength: { value: 0.99 }
+            uOutlineStrength: { value: 1.0 }
           }}
           vertexShader={`
             uniform float uTime;
@@ -504,7 +505,7 @@ function EarthWithTextures() {
             void main() {
               float strength = distance(gl_PointCoord, vec2(0.5));
               strength = 1.0 - strength;
-              strength = pow(strength, 2.0);
+              strength = pow(strength, 1.8);
               
               vec3 color;
               
@@ -529,10 +530,10 @@ function EarthWithTextures() {
               
               color = mix(color, uOutlineColor, isOutline);
               
-              float alpha = strength * (0.6 + vElevation * 0.8);
-              alpha = mix(alpha, 1.0, isOutline * 0.5); // Make outline more visible
+              float alpha = strength * (0.8 + vElevation * 0.8);
+              alpha = mix(alpha, 1.0, isOutline * 0.7);
               
-              if (strength < 0.1) discard;
+              if (strength < 0.05) discard;
               
               gl_FragColor = vec4(color, alpha);
             }

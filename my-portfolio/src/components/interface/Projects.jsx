@@ -18,7 +18,7 @@ const projects = [
   },
   {
     title: "Tsuki Market : E-Commerce Platform",
-    description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time inventory management, seamless checkout process, and stunning product visualizations enhanced by Framer Motion animations.",
+    description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time payment management , seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
     image: "/projects/e-com.jpg",
     tags: ["React.js", "Tailwind", "MongoDB"],
     link: "https://tsukimarket.vercel.app/"
@@ -47,46 +47,42 @@ export function Projects() {
   };
 
   return (
-    <section id="projects" className="py-32 relative">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-blue-950/10 to-black/0 pointer-events-none" />
-      
-      <div className="max-w-screen mx-auto ">
-        {/* Section Header */}
-        <div className="text-center mb-24">
-          <div className="overflow-hidden">
-            <AnimatedText className="text-white/80 text-xl sm:text-2xl font-light mb-4 uppercase tracking-widest">
-              Featured Work
-            </AnimatedText>
+    <>
+      <section id="projects" className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-stone-800/95 to-transparent pointer-events-none" />
+        
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-8 relative">
+          <div className="text-center mb-32">
+            <div className="overflow-hidden">
+              <AnimatedText className="text-white/80 text-xl sm:text-2xl font-semibold mb-4 uppercase tracking-widest">
+                My Work
+              </AnimatedText>
+            </div>
+            <div className="overflow-hidden">
+              <AnimatedText>
+                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                  Featured Projects
+                </h2>
+              </AnimatedText>
+            </div>
           </div>
-          <div className="overflow-hidden">
-            <AnimatedText>
-              <span
-                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold block text-white"
-              >
-                Recent Projects
-              </span>
-            </AnimatedText>
+
+          <div className="grid grid-cols-1 gap-32 relative">
+            {projects.map((project, index) => (
+              <ProjectCard 
+                key={index} 
+                project={project} 
+                index={index} 
+                isEven={index % 2 === 1}
+                onClick={() => handleProjectClick(project.link)}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 gap-24">
-          {projects.map((project, index) => (
-            <ProjectCard 
-              key={index} 
-              project={project} 
-              index={index} 
-              isEven={index % 2 === 1}
-              onClick={() => handleProjectClick(project.link)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Decorative elements */}
-      <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
-    </section>
+        <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-indigo-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+      </section>
+    </>
   )
 } 
