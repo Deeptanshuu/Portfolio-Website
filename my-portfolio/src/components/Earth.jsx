@@ -276,12 +276,16 @@ const ISS = memo(() => {
   )
 })
 
+// Add this near the top with other constants
+const EARTH_SPHERE = new THREE.Mesh(
+  new THREE.SphereGeometry(2, 32, 32),
+  new THREE.MeshBasicMaterial({ visible: false })
+)
+
 function EarthWithTextures() {
-  // Add missing refs
+  // Update ref declarations
   const earthRef = useRef()
-  const dotsRef = useRef()
-  const mouse = useRef({ x: 0, y: 0 })
-  const target = useRef({ x: 0, y: 0 })
+  const earthDotsRef = useRef()  // Changed from dotsRef to earthDotsRef for clarity
   const autoRotate = useRef({ x: 0, y: 0 })
 
   // Optimize texture loading with error handling
@@ -299,43 +303,38 @@ function EarthWithTextures() {
   const FPS_LIMIT = 60
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
-  useFrame(({ clock, mouse: mouseCursor }) => {
+  useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
     frameCount.current++
-    if (frameCount.current % 1 !== 0) return // Skip every other frame
+    if (frameCount.current % 1 !== 0) return
 
     const time = clock.getElapsedTime()
     
-    // Calculate edge proximity (0 = center, 1 = edge)
-    const edgeThreshold = 0.8 // How close to the edge to start acceleration
-    const maxRotationSpeed = 0.015 // Maximum rotation speed
-    const baseRotationSpeed = 0.005 // Base rotation speed
-    
-    // Calculate acceleration based on mouse position
-    let rotationSpeed = baseRotationSpeed
-    if (Math.abs(mouseCursor.x) > edgeThreshold) {
-      const edgeProximity = (Math.abs(mouseCursor.x) - edgeThreshold) / (1 - edgeThreshold)
-      rotationSpeed = baseRotationSpeed + (maxRotationSpeed * edgeProximity * Math.sign(mouseCursor.x))
-    }
-    
+    // Simple constant auto-rotation
+    const rotationSpeed = 0.005
     autoRotate.current.y += rotationSpeed
     
-    target.current.x = mouseCursor.x * 0.628
-    target.current.y = mouseCursor.y * 0.628
-    mouse.current.x += (target.current.x - mouse.current.x) * 0.1
-    mouse.current.y += (target.current.y - mouse.current.y) * 0.1
-    
     const group = earthRef.current.parent
-    group.rotation.y = -mouse.current.x + autoRotate.current.y
-    group.rotation.x = -mouse.current.y
+    group.rotation.y = autoRotate.current.y
     
-    if (dotsRef.current) {
-      dotsRef.current.rotation.y = time * 0.05
-      dotsRef.current.material.opacity = 0.6 + Math.sin(time * 2) * 0.2
+    if (earthDotsRef.current) {
+      earthDotsRef.current.rotation.y = time * 0.05
+      earthDotsRef.current.material.uniforms.uTime.value = time
     }
 
     earthRef.current.material.uniforms.uTime.value = time
-    if (dotsRef.current) {
-      dotsRef.current.material.uniforms.uTime.value = time
+
+    // Keep the mouse intersection for dot raising effect
+    raycaster.setFromCamera(mouseCursor, camera)
+    const intersects = raycaster.intersectObject(EARTH_SPHERE)
+    
+    if (earthDotsRef.current) {
+      if (intersects.length > 0) {
+        // Mouse is over Earth - update hover position
+        earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
+      } else {
+        // Mouse is not over Earth - reset hover position far away
+        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
+      }
     }
   })
 
@@ -427,12 +426,126 @@ function EarthWithTextures() {
     })
   }, [normalMap, displacementMap, specularMap])
 
+  // Add this near other material uniforms in EarthWithTextures
+  const dotsShaderMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        uTime: { value: 5 },
+        uSize: { value: 18.0 },
+        uDisplacementMap: { value: displacementMap },
+        uDisplacementScale: { value: 0.55 },
+        uOceanColor: { value: new THREE.Color('#003366') },
+        uTerrainColor: { value: new THREE.Color('#66ccff') },
+        uHighlightColor: { value: new THREE.Color('#ffffff') },
+        uOutlineColor: { value: new THREE.Color('#ffffff') },
+        uOutlineStrength: { value: 1.0 },
+        uMousePosition: { value: new THREE.Vector3() },
+        uHoverRadius: { value: 1.5 },
+        uHoverStrength: { value: 0.3 },
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uSize;
+        uniform sampler2D uDisplacementMap;
+        uniform float uDisplacementScale;
+        uniform vec3 uMousePosition;
+        uniform float uHoverRadius;
+        uniform float uHoverStrength;
+        
+        attribute vec3 instancePosition;
+        attribute vec2 instanceUv;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vElevation;
+        
+        void main() {
+          vUv = instanceUv;
+          vec3 pos = instancePosition;
+          vec3 normal = normalize(pos);
+          vNormal = normalize(normalMatrix * normal);
+          
+          float elevation = texture2D(uDisplacementMap, instanceUv).r;
+          vElevation = elevation;
+          
+          // Calculate distance to mouse position in world space
+          vec4 worldPosition = modelMatrix * vec4(pos, 1.0);
+          float distanceToMouse = distance(worldPosition.xyz, uMousePosition);
+          float hoverEffect = smoothstep(uHoverRadius, 0.0, distanceToMouse);
+          
+          // Add hover elevation to displacement
+          vec3 displaced = pos + normal * (elevation * uDisplacementScale + hoverEffect * uHoverStrength);
+          
+          vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
+          vec4 viewPosition = viewMatrix * modelPosition;
+          vec4 projectedPosition = projectionMatrix * viewPosition;
+          
+          gl_Position = projectedPosition;
+          
+          float sizeVariation = 1.0 + elevation * 3.0 + hoverEffect * 10.0; // Increase size on hover
+          gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uOceanColor;
+        uniform vec3 uTerrainColor;
+        uniform vec3 uHighlightColor;
+        uniform vec3 uOutlineColor;
+        uniform float uOutlineStrength;
+        uniform float uTime;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vElevation;
+
+        void main() {
+          float strength = distance(gl_PointCoord, vec2(0.5));
+          strength = 1.0 - strength;
+          strength = pow(strength, 1.8);
+          
+          vec3 color;
+          
+          if (vElevation < 0.2) {
+            color = uOceanColor;
+          } else if (vElevation < 0.4) {
+            float t = (vElevation - 0.2) / 0.2;
+            color = mix(uOceanColor, uTerrainColor, t);
+          } else if (vElevation < 0.6) {
+            color = uTerrainColor;
+          } else {
+            float t = (vElevation - 0.6) / 0.4;
+            color = mix(uTerrainColor, uHighlightColor, t);
+          }
+          
+          float outlineStart = 0.2; // Elevation where terrain starts
+          float outlineWidth = 0.05; // Width of the outline
+          float elevationGradient = abs(dFdx(vElevation)) + abs(dFdy(vElevation));
+          float isOutline = smoothstep(0.0, 0.8, elevationGradient) * 
+                           step(outlineStart - outlineWidth, vElevation) * 
+                           uOutlineStrength;
+          
+          color = mix(color, uOutlineColor, isOutline);
+          
+          float alpha = strength * (0.8 + vElevation * 0.8);
+          alpha = mix(alpha, 1.0, isOutline * 0.7);
+          
+          if (strength < 0.05) discard;
+          
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    })
+  }, [displacementMap])
+
   return (
     <group position={[0, 0, -8]} scale={1.75}>
+      <primitive object={EARTH_SPHERE} />
       <Moon />
       <ISS />
       
-      {/* Optimize lights */}
       <ambientLight intensity={1} />
 
       {ORBIT_CONFIG.map((config, index) => (
@@ -442,112 +555,21 @@ function EarthWithTextures() {
         </group>
       ))}
 
+      {/* Earth base */}
       <points ref={earthRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
-        {/* Dots */}
-        <shaderMaterial
-          transparent={true}
-          uniforms={{
-            uTime: { value: 5 },
-            uSize: { value: 18.0 },
-            uDisplacementMap: { value: displacementMap },
-            uDisplacementScale: { value: 0.55 },
-            uOceanColor: { value: new THREE.Color('#003366') },
-            uTerrainColor: { value: new THREE.Color('#66ccff') },
-            uHighlightColor: { value: new THREE.Color('#ffffff') },
-            uOutlineColor: { value: new THREE.Color('#ffffff') },
-            uOutlineStrength: { value: 1.0 }
-          }}
-          vertexShader={`
-            uniform float uTime;
-            uniform float uSize;
-            uniform sampler2D uDisplacementMap;
-            uniform float uDisplacementScale;
-            
-            attribute vec3 instancePosition;
-            attribute vec2 instanceUv;
-            
-            varying vec2 vUv;
-            varying vec3 vNormal;
-            varying float vElevation;
-            
-            void main() {
-              vUv = instanceUv;
-              vec3 pos = instancePosition;
-              vec3 normal = normalize(pos);
-              vNormal = normalize(normalMatrix * normal);
-              
-              float elevation = texture2D(uDisplacementMap, instanceUv).r;
-              vElevation = elevation;
-              
-              vec3 displaced = pos + normal * elevation * uDisplacementScale;
-              vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
-              vec4 viewPosition = viewMatrix * modelPosition;
-              vec4 projectedPosition = projectionMatrix * viewPosition;
-              
-              gl_Position = projectedPosition;
-              
-              float sizeVariation = 1.0 + elevation * 3.0;
-              gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
-            }
-          `}
-          fragmentShader={`
-            uniform vec3 uOceanColor;
-            uniform vec3 uTerrainColor;
-            uniform vec3 uHighlightColor;
-            uniform vec3 uOutlineColor;
-            uniform float uOutlineStrength;
-            uniform float uTime;
-            
-            varying vec2 vUv;
-            varying vec3 vNormal;
-            varying float vElevation;
+        <primitive object={earthMaterial} attach="material" />
+      </points>
 
-            void main() {
-              float strength = distance(gl_PointCoord, vec2(0.5));
-              strength = 1.0 - strength;
-              strength = pow(strength, 1.8);
-              
-              vec3 color;
-              
-              if (vElevation < 0.2) {
-                color = uOceanColor;
-              } else if (vElevation < 0.4) {
-                float t = (vElevation - 0.2) / 0.2;
-                color = mix(uOceanColor, uTerrainColor, t);
-              } else if (vElevation < 0.6) {
-                color = uTerrainColor;
-              } else {
-                float t = (vElevation - 0.6) / 0.4;
-                color = mix(uTerrainColor, uHighlightColor, t);
-              }
-              
-              float outlineStart = 0.2; // Elevation where terrain starts
-              float outlineWidth = 0.05; // Width of the outline
-              float elevationGradient = abs(dFdx(vElevation)) + abs(dFdy(vElevation));
-              float isOutline = smoothstep(0.0, 0.8, elevationGradient) * 
-                               step(outlineStart - outlineWidth, vElevation) * 
-                               uOutlineStrength;
-              
-              color = mix(color, uOutlineColor, isOutline);
-              
-              float alpha = strength * (0.8 + vElevation * 0.8);
-              alpha = mix(alpha, 1.0, isOutline * 0.7);
-              
-              if (strength < 0.05) discard;
-              
-              gl_FragColor = vec4(color, alpha);
-            }
-          `}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
+      {/* Earth dots with hover effect */}
+      <points ref={earthDotsRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+        <primitive object={dotsShaderMaterial} attach="material" />
       </points>
       
       <LocationMarker 
         position={latLongToVector3(
           MUMBAI_COORDINATES.latitude, 
           MUMBAI_COORDINATES.longitude, 
-          2.3 // Slightly larger than Earth radius (2) to float above surface
+          2.3
         )} 
       />
     </group>
