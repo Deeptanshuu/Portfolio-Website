@@ -21,7 +21,7 @@ function ContactInfo() {
         href="mailto:your@email.com" 
         className="text-white text-xl hover:text-white/60 transition-colors"
       >
-        your@email.com
+        laldeeptanshu96@gmail.com
       </a>
     </div>
   )
