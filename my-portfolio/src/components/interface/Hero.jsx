@@ -13,10 +13,10 @@ export function Hero() {
 
       {/* Status Message */}
       <div className="absolute top-24 left-6 sm:left-32 md:left-48 lg:left-64">
-        <AnimatedText delay={0.8} className="text-white/80 text-base font-light tracking-relaxed">
+        <AnimatedText delay={0.8} className="text-white/80 text-sm sm:text-base font-light tracking-relaxed">
           <div className="flex items-center gap-2 px-2">
-            <span className="relative flex h-3 w-3 pr-5">
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            <span className="relative flex h-2 sm:h-3 w-2 sm:w-3 pr-5">
+              <span className="relative inline-flex rounded-full h-2 sm:h-3 w-2 sm:w-3 bg-green-500"></span>
             </span>
             <span>Looking to collaborate</span>
           </div>
@@ -26,16 +26,16 @@ export function Hero() {
       {/* Time Display */}
       <Clock />
       
-      {/* Animated lines with plus sign - hidden on mobile */}
-      <div className="absolute inset-0 opacity-60 hidden md:block">
-        <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 top-0 w-px h-full 
+      {/* Animated lines with plus sign - hidden on screens smaller than 1920x1080 */}
+      <div className="absolute inset-0 opacity-60 hidden 2xl:block">
+        <div className="absolute left-8 2xl:left-64 top-0 w-px h-full 
           bg-gradient-to-b from-transparent via-white to-transparent" />
         
-        <div className="absolute bottom-1/3 sm:bottom-1/4 left-0 h-px w-full 
+        <div className="absolute bottom-1/4 left-0 h-px w-full 
           bg-gradient-to-r from-transparent via-white to-transparent" />
           
         {/* Plus sign at intersection*/}
-        <div className="absolute left-8 sm:left-32 md:left-48 lg:left-64 bottom-1/3 sm:bottom-1/4
+        <div className="absolute left-8 2xl:left-64 bottom-1/4
           w-6 h-6 -translate-x-[12px] -translate-y-[-10px]">
           <span className="absolute w-6 h-[2px] bg-white top-1/2 -translate-y-[1px]"></span>
           <span className="absolute h-6 w-[2px] bg-white left-1/2 -translate-x-[1px]"></span>
@@ -46,11 +46,12 @@ export function Hero() {
         {/* Adjusted vertical positioning */}
         <div className="space-y-3 sm:space-y-5 md:p-0">
           <div>
-            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-[530] tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+            <h1 className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-[530] tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
-                  Hi I&apos;m <span className="ml-1 sm:ml-1" /> 
+                  Hi I&apos;m{" "}
                   <span
+                    className="inline-block"
                     style={{ 
                       color: '#4fc1ff',
                       textShadow: '0 0 30px rgba(79, 193, 255, 0.3)',
@@ -59,7 +60,7 @@ export function Hero() {
                       transform: 'translateZ(0)'
                     }}
                   >
-                     Deeptanshu,
+                    Deeptanshu,
                   </span>
                 </span>
               </AnimatedText>
@@ -97,7 +98,7 @@ function Clock() {
 
   return (
     <div className="absolute top-32 left-6 sm:left-24 md:left-48 lg:left-64">
-      <AnimatedText delay={1} className="text-white/80 text-base font-light tracking-relaxed">
+      <AnimatedText delay={1} className="text-white/80 text-sm sm:text-base font-light tracking-relaxed">
         <div className="flex flex-col gap-4">
           <span className="text-white/40 px-2">It's</span>
           <span>{formatTime(time)}</span>
@@ -112,7 +113,7 @@ function RolesList() {
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center 
       gap-2 sm:gap-6 mt-3 sm:mt-6 
-      text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
+      text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
       overflow-visible">
       <AnimatedText delay={0.4}>
         <span className="font-normal text-white">Developer</span>
@@ -142,7 +143,7 @@ function Description() {
     <div className="overflow-hidden max-w-[90%] sm:max-w-2xl">
       <AnimatedText delay={0.8} className="
         bg-clip-text text-white/80
-        text-base sm:text-lg md:text-xl lg:text-2xl 
+        text-sm sm:text-lg md:text-xl lg:text-2xl 
         font-light leading-relaxed
       ">
         I love everything space, computers and tech.
