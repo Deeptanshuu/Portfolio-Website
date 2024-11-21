@@ -46,7 +46,7 @@ export function Hero() {
 
   return (
     <>
-      <points ref={starsRef}>
+      <points ref={starsRef} renderOrder={-1}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -67,6 +67,8 @@ export function Hero() {
           transparent
           opacity={0.8}
           sizeAttenuation={true}
+          depthWrite={false}
+          depthTest={true}
         />
       </points>
 

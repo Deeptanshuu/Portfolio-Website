@@ -142,9 +142,9 @@ const createInstancedPoints = (geometry) => {
   const instancePositions = new Float32Array(count * 3);
   const instanceUvs = new Float32Array(count * 2);
   
-  // Sample every fourth vertex to reduce density (changed from every other)
+  // Sample every other vertex (restored from every fourth)
   let instanceCount = 0;
-  for (let i = 0; i < count; i += 4) {  // Changed from i += 2
+  for (let i = 0; i < count; i += 2) {  // Changed back from i += 4
     instancePositions[instanceCount * 3] = positions[i * 3];
     instancePositions[instanceCount * 3 + 1] = positions[i * 3 + 1];
     instancePositions[instanceCount * 3 + 2] = positions[i * 3 + 2];
@@ -300,7 +300,7 @@ function EarthWithTextures() {
 
   // Optimize frame updates with RAF limiting
   const frameCount = useRef(0)
-  const FPS_LIMIT = 30  // Reduce from 60 to 30 for mobile
+  const FPS_LIMIT = 60  // Reduce from 60 to 30 for mobile
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
@@ -343,6 +343,9 @@ function EarthWithTextures() {
   const earthMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      renderOrder: 0,
       uniforms: {
         uTime: { value: 0 },
         uNormalMap: { value: normalMap },
@@ -431,6 +434,9 @@ function EarthWithTextures() {
   const dotsShaderMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      renderOrder: 1,
       uniforms: {
         uTime: { value: 5 },
         uSize: { value: 18.0 },
@@ -440,9 +446,9 @@ function EarthWithTextures() {
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
-        uOutlineStrength: { value: 1.0 },
+        uOutlineStrength: { value: 3 },
         uMousePosition: { value: new THREE.Vector3() },
-        uHoverRadius: { value: 1.5 },
+        uHoverRadius: { value: 2.5 },
         uHoverStrength: { value: 0.3 },
       },
       vertexShader: `
@@ -557,12 +563,12 @@ function EarthWithTextures() {
       ))}
 
       {/* Earth base */}
-      <points ref={earthRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+      <points ref={earthRef} geometry={earthGeometry} renderOrder={0}>
         <primitive object={earthMaterial} attach="material" />
       </points>
 
       {/* Earth dots with hover effect */}
-      <points ref={earthDotsRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+      <points ref={earthDotsRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])} renderOrder={1}>
         <primitive object={dotsShaderMaterial} attach="material" />
       </points>
       
