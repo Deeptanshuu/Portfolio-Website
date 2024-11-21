@@ -276,6 +276,12 @@ const ISS = memo(() => {
   )
 })
 
+// Add this near the top with other constants
+const EARTH_SPHERE = new THREE.Mesh(
+  new THREE.SphereGeometry(2, 32, 32),
+  new THREE.MeshBasicMaterial({ visible: false })
+)
+
 function EarthWithTextures() {
   // Update ref declarations
   const earthRef = useRef()
@@ -297,7 +303,7 @@ function EarthWithTextures() {
   const FPS_LIMIT = 60
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
     frameCount.current++
     if (frameCount.current % 1 !== 0) return
 
@@ -316,6 +322,20 @@ function EarthWithTextures() {
     }
 
     earthRef.current.material.uniforms.uTime.value = time
+
+    // Keep the mouse intersection for dot raising effect
+    raycaster.setFromCamera(mouseCursor, camera)
+    const intersects = raycaster.intersectObject(EARTH_SPHERE)
+    
+    if (earthDotsRef.current) {
+      if (intersects.length > 0) {
+        // Mouse is over Earth - update hover position
+        earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
+      } else {
+        // Mouse is not over Earth - reset hover position far away
+        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
+      }
+    }
   })
 
   // Define Earth material
@@ -420,12 +440,18 @@ function EarthWithTextures() {
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
         uOutlineStrength: { value: 1.0 },
+        uMousePosition: { value: new THREE.Vector3() },
+        uHoverRadius: { value: 1.5 },
+        uHoverStrength: { value: 0.3 },
       },
       vertexShader: `
         uniform float uTime;
         uniform float uSize;
         uniform sampler2D uDisplacementMap;
         uniform float uDisplacementScale;
+        uniform vec3 uMousePosition;
+        uniform float uHoverRadius;
+        uniform float uHoverStrength;
         
         attribute vec3 instancePosition;
         attribute vec2 instanceUv;
@@ -443,7 +469,13 @@ function EarthWithTextures() {
           float elevation = texture2D(uDisplacementMap, instanceUv).r;
           vElevation = elevation;
           
-          vec3 displaced = pos + normal * (elevation * uDisplacementScale);
+          // Calculate distance to mouse position in world space
+          vec4 worldPosition = modelMatrix * vec4(pos, 1.0);
+          float distanceToMouse = distance(worldPosition.xyz, uMousePosition);
+          float hoverEffect = smoothstep(uHoverRadius, 0.0, distanceToMouse);
+          
+          // Add hover elevation to displacement
+          vec3 displaced = pos + normal * (elevation * uDisplacementScale + hoverEffect * uHoverStrength);
           
           vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
           vec4 viewPosition = viewMatrix * modelPosition;
@@ -451,7 +483,7 @@ function EarthWithTextures() {
           
           gl_Position = projectedPosition;
           
-          float sizeVariation = 1.0 + elevation * 3.0;
+          float sizeVariation = 1.0 + elevation * 3.0 + hoverEffect * 10.0; // Increase size on hover
           gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
         }
       `,
@@ -510,6 +542,7 @@ function EarthWithTextures() {
 
   return (
     <group position={[0, 0, -8]} scale={1.75}>
+      <primitive object={EARTH_SPHERE} />
       <Moon />
       <ISS />
       
