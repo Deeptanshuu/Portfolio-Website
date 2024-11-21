@@ -142,9 +142,11 @@ const createInstancedPoints = (geometry) => {
   const instancePositions = new Float32Array(count * 3);
   const instanceUvs = new Float32Array(count * 2);
   
-  // Sample more frequently (changed from i += 2 to i += 1)
+  // Sample less frequently on mobile
+  const samplingRate = isMobile ? 4 : 1;  // Sample every 4th point on mobile
   let instanceCount = 0;
-  for (let i = 0; i < count; i += 1) {  // Changed from i += 2 to i += 1
+  
+  for (let i = 0; i < count; i += samplingRate) {
     instancePositions[instanceCount * 3] = positions[i * 3];
     instancePositions[instanceCount * 3 + 1] = positions[i * 3 + 1];
     instancePositions[instanceCount * 3 + 2] = positions[i * 3 + 2];
@@ -158,10 +160,7 @@ const createInstancedPoints = (geometry) => {
   const instancedGeometry = new THREE.InstancedBufferGeometry();
   instancedGeometry.instanceCount = instanceCount;
   
-  // Add base point geometry
   instancedGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3));
-  
-  // Add instanced attributes
   instancedGeometry.setAttribute('instancePosition', new THREE.InstancedBufferAttribute(instancePositions, 3));
   instancedGeometry.setAttribute('instanceUv', new THREE.InstancedBufferAttribute(instanceUvs, 2));
   
@@ -301,31 +300,33 @@ function EarthWithTextures() {
     ]
   }, [])
 
-  // Optimize frame updates with RAF limiting
+  // Optimize frame updates more aggressively for mobile
   const frameCount = useRef(0)
-  const FPS_LIMIT = 60  // Reduce from 60 to 30 for mobile
-  const FPS_INTERVAL = 1000 / FPS_LIMIT
+  const FPS_LIMIT = isMobile ? 30 : 60
+  const FRAME_SKIP = isMobile ? 3 : 2  // Skip more frames on mobile
 
   useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
     frameCount.current++
-    if (frameCount.current % 2 !== 0) return
+    if (frameCount.current % FRAME_SKIP !== 0) return
 
     const time = clock.getElapsedTime()
     
-    const rotationSpeed = 0.005
+    // Slower rotation on mobile
+    const rotationSpeed = isMobile ? 0.002 : 0.005
     autoRotate.current.y += rotationSpeed
     
     const group = earthRef.current.parent
     group.rotation.y = autoRotate.current.y
     
     if (earthDotsRef.current) {
-      earthDotsRef.current.rotation.y = time * 0.05
+      // Slower dot rotation on mobile
+      earthDotsRef.current.rotation.y = time * (isMobile ? 0.02 : 0.05)
       earthDotsRef.current.material.uniforms.uTime.value = time
     }
 
     earthRef.current.material.uniforms.uTime.value = time
 
-    // Only do hover effect on non-mobile devices
+    // Only do hover effect on non-mobile
     if (!isMobile && earthDotsRef.current) {
       raycaster.setFromCamera(mouseCursor, camera)
       const intersects = raycaster.intersectObject(EARTH_SPHERE)
@@ -333,14 +334,14 @@ function EarthWithTextures() {
       if (intersects.length > 0) {
         earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
       } else {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.set(0, 0, 0)
+        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
       }
     }
   })
 
   // Define Earth material
   const earthMaterial = useMemo(() => {
-    return new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       depthTest: true,
@@ -351,7 +352,7 @@ function EarthWithTextures() {
         uDisplacementMap: { value: displacementMap },
         uSpecularMap: { value: specularMap },
         uNormalScale: { value: 10.0 },
-        uDisplacementScale: { value: 5 },
+        uDisplacementScale: { value: isMobile ? 2 : 5 }, // Reduce displacement on mobile
         uOceanColor: { value: new THREE.Color('#003366') },
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') }
@@ -426,6 +427,7 @@ function EarthWithTextures() {
       `,
       blending: THREE.AdditiveBlending
     })
+    return material
   }, [normalMap, displacementMap, specularMap])
 
   // Add this near other material uniforms in EarthWithTextures
@@ -437,9 +439,9 @@ function EarthWithTextures() {
       renderOrder: 1,
       uniforms: {
         uTime: { value: 8 },
-        uSize: { value: 20.0 },
+        uSize: { value: isMobile ? 15.0 : 20.0 }, // Smaller dots on mobile
         uDisplacementMap: { value: displacementMap },
-        uDisplacementScale: { value: 0.55 },
+        uDisplacementScale: { value: isMobile ? 0.3 : 0.55 },
         uOceanColor: { value: new THREE.Color('#003366') },
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
@@ -545,7 +547,7 @@ function EarthWithTextures() {
   }, [displacementMap])
 
   return (
-    <group position={[0, 0, -8]} scale={1.75}>
+    <group position={[0, 0, -8]} scale={isMobile ? 1.5 : 1.75}>
       <primitive object={EARTH_SPHERE} />
       <Moon />
       <ISS />
