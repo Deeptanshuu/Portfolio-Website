@@ -305,13 +305,12 @@ function EarthWithTextures() {
   const FPS_LIMIT = isMobile ? 30 : 60
   const FRAME_SKIP = isMobile ? 3 : 2  // Skip more frames on mobile
 
-  useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
+  useFrame(({ clock }) => {
     frameCount.current++
     if (frameCount.current % FRAME_SKIP !== 0) return
 
     const time = clock.getElapsedTime()
     
-    // Slower rotation on mobile
     const rotationSpeed = isMobile ? 0.002 : 0.005
     autoRotate.current.y += rotationSpeed
     
@@ -319,24 +318,11 @@ function EarthWithTextures() {
     group.rotation.y = autoRotate.current.y
     
     if (earthDotsRef.current) {
-      // Slower dot rotation on mobile
       earthDotsRef.current.rotation.y = time * (isMobile ? 0.02 : 0.05)
       earthDotsRef.current.material.uniforms.uTime.value = time
     }
 
     earthRef.current.material.uniforms.uTime.value = time
-
-    // Only do hover effect on non-mobile
-    if (!isMobile && earthDotsRef.current) {
-      raycaster.setFromCamera(mouseCursor, camera)
-      const intersects = raycaster.intersectObject(EARTH_SPHERE)
-      
-      if (intersects.length > 0) {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
-      } else {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
-      }
-    }
   })
 
   // Define Earth material
@@ -430,7 +416,7 @@ function EarthWithTextures() {
     return material
   }, [normalMap, displacementMap, specularMap])
 
-  // Add this near other material uniforms in EarthWithTextures
+  // Remove hover-related uniforms and simplify dotsShaderMaterial
   const dotsShaderMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       transparent: true,
@@ -439,26 +425,20 @@ function EarthWithTextures() {
       renderOrder: 1,
       uniforms: {
         uTime: { value: 8 },
-        uSize: { value: isMobile ? 15.0 : 20.0 }, // Smaller dots on mobile
+        uSize: { value: isMobile ? 15.0 : 20.0 },
         uDisplacementMap: { value: displacementMap },
         uDisplacementScale: { value: isMobile ? 0.3 : 0.55 },
         uOceanColor: { value: new THREE.Color('#003366') },
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
-        uOutlineStrength: { value: 10 },
-        uMousePosition: { value: new THREE.Vector3() },
-        uHoverRadius: { value: 2.3 },
-        uHoverStrength: { value: 0.23 },
+        uOutlineStrength: { value: 10 }
       },
       vertexShader: `
         uniform float uTime;
         uniform float uSize;
         uniform sampler2D uDisplacementMap;
         uniform float uDisplacementScale;
-        uniform vec3 uMousePosition;
-        uniform float uHoverRadius;
-        uniform float uHoverStrength;
         
         attribute vec3 instancePosition;
         attribute vec2 instanceUv;
@@ -476,13 +456,8 @@ function EarthWithTextures() {
           float elevation = texture2D(uDisplacementMap, instanceUv).r;
           vElevation = elevation;
           
-          // Calculate distance to mouse position in world space
-          vec4 worldPosition = modelMatrix * vec4(pos, 1.0);
-          float distanceToMouse = distance(worldPosition.xyz, uMousePosition);
-          float hoverEffect = smoothstep(uHoverRadius, 0.0, distanceToMouse);
-          
-          // Add hover elevation to displacement
-          vec3 displaced = pos + normal * (elevation * uDisplacementScale + hoverEffect * uHoverStrength);
+          // Simple displacement without hover effect
+          vec3 displaced = pos + normal * elevation * uDisplacementScale;
           
           vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
           vec4 viewPosition = viewMatrix * modelPosition;
@@ -490,7 +465,7 @@ function EarthWithTextures() {
           
           gl_Position = projectedPosition;
           
-          float sizeVariation = 1.0 + elevation * 3.0 + hoverEffect * 10.0; // Increase size on hover
+          float sizeVariation = 1.0 + elevation * 3.0;
           gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
         }
       `,
@@ -525,17 +500,7 @@ function EarthWithTextures() {
             color = mix(uTerrainColor, uHighlightColor, t);
           }
           
-          float outlineStart = 0.2; // Elevation where terrain starts
-          float outlineWidth = 0.05; // Width of the outline
-          float elevationGradient = abs(dFdx(vElevation)) + abs(dFdy(vElevation));
-          float isOutline = smoothstep(0.0, 0.8, elevationGradient) * 
-                           step(outlineStart - outlineWidth, vElevation) * 
-                           uOutlineStrength;
-          
-          color = mix(color, uOutlineColor, isOutline);
-          
           float alpha = strength * (0.8 + vElevation * 0.8);
-          alpha = mix(alpha, 1.0, isOutline * 0.7);
           
           if (strength < 0.05) discard;
           
