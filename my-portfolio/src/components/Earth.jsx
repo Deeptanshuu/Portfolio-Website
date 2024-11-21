@@ -54,8 +54,42 @@ const EARTH_SPHERE = new THREE.Mesh(
 // Add this near other constants at the top
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
+// Add this helper function back
+const createInstancedPoints = (geometry) => {
+  const positions = geometry.attributes.position.array;
+  const uvs = geometry.attributes.uv.array;
+  const count = positions.length / 3;
+  
+  // Create arrays for instanced attributes
+  const instancePositions = new Float32Array(count * 3);
+  const instanceUvs = new Float32Array(count * 2);
+  
+  // Sample every vertex for maximum density
+  let instanceCount = 0;
+  for (let i = 0; i < count; i += 1) {
+    instancePositions[instanceCount * 3] = positions[i * 3];
+    instancePositions[instanceCount * 3 + 1] = positions[i * 3 + 1];
+    instancePositions[instanceCount * 3 + 2] = positions[i * 3 + 2];
+    
+    instanceUvs[instanceCount * 2] = uvs[i * 2];
+    instanceUvs[instanceCount * 2 + 1] = uvs[i * 2 + 1];
+    
+    instanceCount++;
+  }
+  
+  const instancedGeometry = new THREE.InstancedBufferGeometry();
+  instancedGeometry.instanceCount = instanceCount;
+  
+  instancedGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3));
+  instancedGeometry.setAttribute('instancePosition', new THREE.InstancedBufferAttribute(instancePositions, 3));
+  instancedGeometry.setAttribute('instanceUv', new THREE.InstancedBufferAttribute(instanceUvs, 2));
+  
+  return instancedGeometry;
+};
+
 function EarthWithTextures() {
   const earthRef = useRef()
+  const earthDotsRef = useRef()
   const autoRotate = useRef({ x: 0, y: 0 })
 
   // Optimize texture loading with error handling
@@ -84,6 +118,11 @@ function EarthWithTextures() {
     
     const group = earthRef.current.parent
     group.rotation.y = autoRotate.current.y
+
+    if (earthDotsRef.current) {
+      earthDotsRef.current.rotation.y = time * (isMobile ? 0.02 : 0.05)
+      earthDotsRef.current.material.uniforms.uTime.value = time
+    }
 
     earthRef.current.material.uniforms.uTime.value = time
   })
@@ -177,6 +216,94 @@ function EarthWithTextures() {
     })
   }, [normalMap, displacementMap, specularMap])
 
+  // Add dots shader material
+  const dotsShaderMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      uniforms: {
+        uTime: { value: 0 },
+        uSize: { value: isMobile ? 3.0 : 4.0 },
+        uDisplacementMap: { value: displacementMap },
+        uDisplacementScale: { value: 0.4 },
+        uOceanColor: { value: new THREE.Color('#003366') },
+        uTerrainColor: { value: new THREE.Color('#66ccff') },
+        uHighlightColor: { value: new THREE.Color('#ffffff') }
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uSize;
+        uniform sampler2D uDisplacementMap;
+        uniform float uDisplacementScale;
+        
+        attribute vec3 instancePosition;
+        attribute vec2 instanceUv;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vElevation;
+        
+        void main() {
+          vUv = instanceUv;
+          vec3 pos = instancePosition;
+          vec3 normal = normalize(pos);
+          vNormal = normalize(normalMatrix * normal);
+          
+          float elevation = texture2D(uDisplacementMap, instanceUv).r;
+          vElevation = elevation;
+          
+          vec3 displaced = pos + normal * elevation * uDisplacementScale;
+          
+          vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
+          vec4 viewPosition = viewMatrix * modelPosition;
+          vec4 projectedPosition = projectionMatrix * viewPosition;
+          
+          gl_Position = projectedPosition;
+          
+          float sizeVariation = 1.0 + elevation * 2.0;
+          gl_PointSize = uSize * sizeVariation * (1.0 / -viewPosition.z);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uOceanColor;
+        uniform vec3 uTerrainColor;
+        uniform vec3 uHighlightColor;
+        
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vElevation;
+
+        void main() {
+          float strength = distance(gl_PointCoord, vec2(0.5));
+          strength = 1.0 - strength;
+          strength = pow(strength, 1.5);
+          
+          vec3 color;
+          
+          if (vElevation < 0.2) {
+            color = uOceanColor;
+          } else if (vElevation < 0.4) {
+            float t = (vElevation - 0.2) / 0.2;
+            color = mix(uOceanColor, uTerrainColor, t);
+          } else if (vElevation < 0.6) {
+            color = uTerrainColor;
+          } else {
+            float t = (vElevation - 0.6) / 0.4;
+            color = mix(uTerrainColor, uHighlightColor, t);
+          }
+          
+          float alpha = strength * (0.4 + vElevation * 0.5);
+          
+          if (strength < 0.05) discard;
+          
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      blending: THREE.AdditiveBlending
+    })
+  }, [displacementMap])
+
   return (
     <group position={[0, 0, -8]} scale={isMobile ? 1.5 : 1.75}>
       <primitive object={EARTH_SPHERE} />
@@ -193,6 +320,11 @@ function EarthWithTextures() {
       <mesh ref={earthRef} geometry={earthGeometry}>
         <primitive object={earthMaterial} attach="material" />
       </mesh>
+
+      {/* Earth dots */}
+      <points ref={earthDotsRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+        <primitive object={dotsShaderMaterial} attach="material" />
+      </points>
     </group>
   )
 }
