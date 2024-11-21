@@ -446,8 +446,8 @@ function EarthWithTextures() {
         uOutlineColor: { value: new THREE.Color('#ffffff') },
         uOutlineStrength: { value: 10 },
         uMousePosition: { value: new THREE.Vector3() },
-        // uHoverRadius: { value: 2.3 },
-        // uHoverStrength: { value: 0.23 },
+        uHoverRadius: { value: 2.3 },
+        uHoverStrength: { value: 0.23 },
       },
       vertexShader: `
         uniform float uTime;
