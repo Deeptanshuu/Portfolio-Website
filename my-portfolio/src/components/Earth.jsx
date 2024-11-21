@@ -432,7 +432,7 @@ function EarthWithTextures() {
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
-        uOutlineStrength: { value: 10 }
+        uOutlineStrength: { value: 1 }
       },
       vertexShader: `
         uniform float uTime;
