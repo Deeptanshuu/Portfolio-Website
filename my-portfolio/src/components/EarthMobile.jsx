@@ -166,7 +166,7 @@ function EarthMobileWithTextures() {
         uDayMap: { value: dayMap },
         uNightMap: { value: nightMap },
         uDisplacementMap: { value: displacementMap },
-        uDisplacementScale: { value: 0.25 }
+        uDisplacementScale: { value: 0.15 }
       },
       vertexShader: `
         uniform sampler2D uDisplacementMap;
