@@ -1,11 +1,29 @@
 import { Canvas } from '@react-three/fiber'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { ScrollControls, Scroll } from '@react-three/drei'
 import { Hero } from './components/Hero'
 import { Interface } from './components/interface/Interface'
 import { CustomCursor } from './components/CustomCursor'
 
 export default function App() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile)
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   return (
     <div className="h-screen bg-black">
       <CustomCursor />
@@ -19,7 +37,7 @@ export default function App() {
       >
         <Suspense fallback={null}>
           <ScrollControls pages={8.5} damping={0.3}>
-            <Hero />
+            <Hero isMobile={isMobile} />
             <Scroll html>
               <Interface />
             </Scroll>
