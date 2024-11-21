@@ -27,7 +27,7 @@ const moonGeometry = new THREE.SphereGeometry(MOON_CONFIG.size, 32, 32)
 const moonGlowGeometry = new THREE.SphereGeometry(MOON_CONFIG.size * 1.2, 32, 32)
 const moonOrbitGeometry = new THREE.RingGeometry(MOON_CONFIG.radius - 0.005, MOON_CONFIG.radius + 0.005, 128)
 const satelliteGeometry = new THREE.SphereGeometry(0.03, 8, 8)
-const earthGeometry = new THREE.SphereGeometry(2, 128, 128)
+const earthGeometry = new THREE.SphereGeometry(2, 180, 180)
 
 // Optimize OrbitLine with shared geometry
 const OrbitLine = memo(({ radius }) => {
@@ -142,9 +142,9 @@ const createInstancedPoints = (geometry) => {
   const instancePositions = new Float32Array(count * 3);
   const instanceUvs = new Float32Array(count * 2);
   
-  // Sample every other vertex (restored from every fourth)
+  // Sample more frequently (changed from i += 2 to i += 1)
   let instanceCount = 0;
-  for (let i = 0; i < count; i += 2) {  // Changed back from i += 4
+  for (let i = 0; i < count; i += 1) {  // Changed from i += 2 to i += 1
     instancePositions[instanceCount * 3] = positions[i * 3];
     instancePositions[instanceCount * 3 + 1] = positions[i * 3 + 1];
     instancePositions[instanceCount * 3 + 2] = positions[i * 3 + 2];
@@ -282,6 +282,9 @@ const EARTH_SPHERE = new THREE.Mesh(
   new THREE.MeshBasicMaterial({ visible: false })
 )
 
+// Add this near other constants at the top
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
 function EarthWithTextures() {
   // Update ref declarations
   const earthRef = useRef()
@@ -304,13 +307,11 @@ function EarthWithTextures() {
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
-    // Limit frame updates more aggressively on mobile
     frameCount.current++
-    if (frameCount.current % 2 !== 0) return  // Skip every other frame
+    if (frameCount.current % 2 !== 0) return
 
     const time = clock.getElapsedTime()
     
-    // Simple constant auto-rotation
     const rotationSpeed = 0.005
     autoRotate.current.y += rotationSpeed
     
@@ -324,16 +325,14 @@ function EarthWithTextures() {
 
     earthRef.current.material.uniforms.uTime.value = time
 
-    // Keep the mouse intersection for dot raising effect
-    raycaster.setFromCamera(mouseCursor, camera)
-    const intersects = raycaster.intersectObject(EARTH_SPHERE)
-    
-    if (earthDotsRef.current) {
+    // Only do hover effect on non-mobile devices
+    if (!isMobile && earthDotsRef.current) {
+      raycaster.setFromCamera(mouseCursor, camera)
+      const intersects = raycaster.intersectObject(EARTH_SPHERE)
+      
       if (intersects.length > 0) {
-        // Mouse is over Earth - update hover position
         earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
       } else {
-        // Mouse is not over Earth - reset hover position far away
         earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
       }
     }
@@ -352,7 +351,7 @@ function EarthWithTextures() {
         uDisplacementMap: { value: displacementMap },
         uSpecularMap: { value: specularMap },
         uNormalScale: { value: 10.0 },
-        uDisplacementScale: { value: 0.45 },
+        uDisplacementScale: { value: 5 },
         uOceanColor: { value: new THREE.Color('#003366') },
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') }
@@ -425,8 +424,7 @@ function EarthWithTextures() {
           gl_FragColor = vec4(color, alpha);
         }
       `,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      blending: THREE.AdditiveBlending
     })
   }, [normalMap, displacementMap, specularMap])
 
@@ -438,18 +436,18 @@ function EarthWithTextures() {
       depthTest: true,
       renderOrder: 1,
       uniforms: {
-        uTime: { value: 5 },
-        uSize: { value: 18.0 },
+        uTime: { value: 8 },
+        uSize: { value: 20.0 },
         uDisplacementMap: { value: displacementMap },
         uDisplacementScale: { value: 0.55 },
         uOceanColor: { value: new THREE.Color('#003366') },
         uTerrainColor: { value: new THREE.Color('#66ccff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
-        uOutlineStrength: { value: 3 },
+        uOutlineStrength: { value: 10 },
         uMousePosition: { value: new THREE.Vector3() },
-        uHoverRadius: { value: 2.5 },
-        uHoverStrength: { value: 0.3 },
+        uHoverRadius: { value: 2.3 },
+        uHoverStrength: { value: 0.23 },
       },
       vertexShader: `
         uniform float uTime;
@@ -542,8 +540,7 @@ function EarthWithTextures() {
           gl_FragColor = vec4(color, alpha);
         }
       `,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      blending: THREE.AdditiveBlending
     })
   }, [displacementMap])
 
