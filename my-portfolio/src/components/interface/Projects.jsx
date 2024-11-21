@@ -49,7 +49,7 @@ export function Projects() {
   return (
     <>
       <section id="projects" className="py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-stone-800/95 to-transparent pointer-events-none" />
+        <div className="absolute inset-0  pointer-events-none" />
         
         <div className="max-w-[1400px] mx-auto px-6 lg:px-8 relative">
           <div className="text-center mb-32">
@@ -60,7 +60,7 @@ export function Projects() {
             </div>
               <div className="overflow-visible">
               <AnimatedText>
-                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-clip-text text-white/80">
                   Featured Projects
                 </h2>
               </AnimatedText>

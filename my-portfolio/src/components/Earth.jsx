@@ -99,7 +99,7 @@ const Moon = memo(() => {
   })
 
   return (
-    <group rotation-x={3.141*0.15}>
+    <group rotation-x={3.141*0.05}>
       <mesh rotation-x={3.141 / 2} geometry={moonOrbitGeometry}>
         <meshBasicMaterial
           color={MOON_CONFIG.color}

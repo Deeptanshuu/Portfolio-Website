@@ -2,6 +2,7 @@
 import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Earth } from './Earth'
+import { EarthMobile } from './EarthMobile'
 
 export function Hero({ isMobile }) {
   const { width, height } = useThree((state) => state.viewport)
@@ -66,7 +67,7 @@ export function Hero({ isMobile }) {
         />
       </points>
 
-      {!isMobile && <Earth />}
+      {isMobile ? <EarthMobile /> : <Earth />}
     </>
   )
 } 

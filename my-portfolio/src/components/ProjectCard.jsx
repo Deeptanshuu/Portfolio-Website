@@ -51,7 +51,8 @@ export function ProjectCard({ project, index, isEven, onClick }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group relative border border-white/10 rounded-lg py-12 lg:py-16 first:pt-12 
-                 hover:border-white/20 transition-colors duration-300 px-4 lg:px-6"
+                 hover:border-white/20 transition-colors duration-300 px-4 lg:px-6
+                 backdrop-blur-sm bg-white/[0.02]"
     >
       <div className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
         {/* Content */}
@@ -74,7 +75,8 @@ export function ProjectCard({ project, index, isEven, onClick }) {
             {project.tags.map((tag, i) => (
               <span
                 key={i}
-                className="text-sm px-4 py-2 rounded-full text-white/80 bg-white/5 backdrop-blur-sm
+                className="text-sm px-4 py-2 rounded-full text-white/80 
+                          bg-black/20 lg:bg-white/5 lg:backdrop-blur-sm
                           border border-white/10 transition-colors duration-300
                           hover:bg-white/10 hover:border-white/20"
               >
@@ -88,7 +90,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
               <button
                 onClick={onClick}
                 className="group/button relative px-8 py-3 rounded-full 
-                  bg-white/5 backdrop-blur-sm
+                  bg-black/20 lg:bg-white/5 lg:backdrop-blur-sm
                   border border-white/20
                   text-white/90
                   transition-all duration-300
@@ -117,11 +119,13 @@ export function ProjectCard({ project, index, isEven, onClick }) {
         </div>
 
         {/* Image with enhanced hover effects */}
-        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-lg overflow-hidden relative group/image">
+        <div className="lg:w-1/2 w-full aspect-[16/10] rounded-lg overflow-hidden relative group/image
+                      bg-white/[0.02]">
           {!imageLoaded && (
             <div className="absolute inset-0 bg-white/5 animate-pulse" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 
+                        group-hover/image:opacity-100 transition-opacity duration-500" />
           <img
             src={project.image}
             alt={project.title}
@@ -133,7 +137,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
         </div>
       </div>
 
-      {/* Enhanced hover gradient */}
+      {/* Enhanced hover gradient without blur */}
       <div 
         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none
           bg-[radial-gradient(circle_at_${isEven ? '75%' : '25%'}_50%,rgba(255,255,255,0.03)_0%,transparent_70%)]`}

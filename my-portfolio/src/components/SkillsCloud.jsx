@@ -98,12 +98,12 @@ export function SkillsCloud() {
                 }}
               >
                 <skill.icon 
-                  className="w-6 h-6 sm:w-8 sm:h-8 m-4 transition-transform duration-300 group-hover:rotate-12" 
+                  className="w-6 h-6 sm:w-8 sm:h-8 m-4 translate-x-[-5px] translate-y-[-5px] transition-transform duration-300 group-hover:rotate-12" 
                   style={{ color: skill.color }}
                 />
               </div>
 
-              <div className="text-base sm:text-lg font-medium">{skill.name} <br className="" /></div>
+              <div className="text-base sm:text-lg font-medium px-4">{skill.name} <br className="" /></div>
             </div>
           </AnimatedText>
         ))}
