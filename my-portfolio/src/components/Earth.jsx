@@ -27,7 +27,7 @@ const moonGeometry = new THREE.SphereGeometry(MOON_CONFIG.size, 32, 32)
 const moonGlowGeometry = new THREE.SphereGeometry(MOON_CONFIG.size * 1.2, 32, 32)
 const moonOrbitGeometry = new THREE.RingGeometry(MOON_CONFIG.radius - 0.005, MOON_CONFIG.radius + 0.005, 128)
 const satelliteGeometry = new THREE.SphereGeometry(0.03, 8, 8)
-const earthGeometry = new THREE.SphereGeometry(2, 256, 256)
+const earthGeometry = new THREE.SphereGeometry(2, 128, 128)
 
 // Optimize OrbitLine with shared geometry
 const OrbitLine = memo(({ radius }) => {
@@ -142,9 +142,9 @@ const createInstancedPoints = (geometry) => {
   const instancePositions = new Float32Array(count * 3);
   const instanceUvs = new Float32Array(count * 2);
   
-  // Sample every other vertex to reduce density
+  // Sample every fourth vertex to reduce density (changed from every other)
   let instanceCount = 0;
-  for (let i = 0; i < count; i += 2) { // Skip every other point
+  for (let i = 0; i < count; i += 4) {  // Changed from i += 2
     instancePositions[instanceCount * 3] = positions[i * 3];
     instancePositions[instanceCount * 3 + 1] = positions[i * 3 + 1];
     instancePositions[instanceCount * 3 + 2] = positions[i * 3 + 2];
@@ -300,12 +300,13 @@ function EarthWithTextures() {
 
   // Optimize frame updates with RAF limiting
   const frameCount = useRef(0)
-  const FPS_LIMIT = 60
+  const FPS_LIMIT = 30  // Reduce from 60 to 30 for mobile
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
+    // Limit frame updates more aggressively on mobile
     frameCount.current++
-    if (frameCount.current % 1 !== 0) return
+    if (frameCount.current % 2 !== 0) return  // Skip every other frame
 
     const time = clock.getElapsedTime()
     

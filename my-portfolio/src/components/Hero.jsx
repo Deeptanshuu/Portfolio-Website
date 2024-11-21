@@ -7,12 +7,16 @@ export function Hero() {
   const { width, height } = useThree((state) => state.viewport)
   const starsRef = useRef()
 
+  // Generate fewer stars for mobile devices
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  const NUM_STARS = isMobile ? 500 : 1000  // Half the stars on mobile
+
   // Generate random star positions
   const starPositions = useMemo(() => {
-    const positions = new Float32Array(1000 * 3) // 1000 stars
-    const colors = new Float32Array(1000 * 3)
+    const positions = new Float32Array(NUM_STARS * 3) // 1000 stars
+    const colors = new Float32Array(NUM_STARS * 3)
     
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < NUM_STARS; i++) {
       // Random position in a sphere
       const radius = 5 + Math.random() * 15 // Between 5 and 20 units from center
       const theta = Math.random() * Math.PI * 2
@@ -32,11 +36,11 @@ export function Hero() {
     return { positions, colors }
   }, [])
 
+  // Reduce star rotation speed
   useFrame((state) => {
     if (starsRef.current) {
-      // Subtle rotation of the entire star field
-      starsRef.current.rotation.y += 0.0001
-      starsRef.current.rotation.x += 0.0001
+      starsRef.current.rotation.y += 0.00005  // Reduced from 0.0001
+      starsRef.current.rotation.x += 0.00005
     }
   })
 
