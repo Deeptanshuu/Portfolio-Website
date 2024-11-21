@@ -333,7 +333,7 @@ function EarthWithTextures() {
       if (intersects.length > 0) {
         earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point)
       } else {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000)
+        earthDotsRef.current.material.uniforms.uMousePosition.value.set(0, 0, 0)
       }
     }
   })
