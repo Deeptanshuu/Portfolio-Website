@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* Add Satoshi font faces */
-@font-face {
+/* @font-face {
   font-family: 'Satoshi';
   src: url('/fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
        url('/fonts/Satoshi/Satoshi-Variable.woff') format('woff');
@@ -19,6 +20,19 @@
   font-weight: 300 900;
   font-display: swap;
   font-style: italic;
+} */
+
+
+@font-face {
+  font-family: 'Space Grotesk' ;
+  src: url('/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf') format('ttf'),
+       url('/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf') format('ttf'),
+       url('/fonts/SpaceGrotesk/SpaceGrotesk-Medium.ttf') format('ttf'),
+       url('/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf') format('ttf'),
+       url('/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.ttf') format('ttf');
+  font-weight: 300 700;
+  font-display: swap;
+  font-style: normal;
 }
 
 * {
@@ -29,7 +43,7 @@
 
 body {
   background: black;
-  font-family: 'Satoshi', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 

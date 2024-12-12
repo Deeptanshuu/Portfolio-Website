@@ -46,7 +46,7 @@ export function Hero() {
         {/* Adjusted vertical positioning */}
         <div className="space-y-3 sm:space-y-5 md:p-0">
           <div>
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-[530] tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+            <h1 className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
                   Hi I&apos;m{" "}

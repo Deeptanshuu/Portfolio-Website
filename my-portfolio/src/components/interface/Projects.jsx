@@ -80,8 +80,8 @@ export function Projects() {
           </div>
         </div>
 
-        <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-indigo-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+        {/* <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-indigo-500/20 rounded-full blur-[150px] pointer-events-none animate-pulse"/> */}
       </section>
     </>
   )

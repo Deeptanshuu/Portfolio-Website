@@ -85,7 +85,7 @@ export function Contact() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+      {/* <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" /> */}
     </section>
   )
 } 
