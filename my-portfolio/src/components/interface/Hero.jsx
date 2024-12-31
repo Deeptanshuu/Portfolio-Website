@@ -6,36 +6,35 @@ import { Logo } from './Logo'
 export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
-      {/* Logo - Updated positioning */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:top-16 sm:left-[5rem]">
+      {/* Logo - Updated positioning for consistency */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:top-16 lg:left-[5rem]">
         <Logo />
       </div>
 
-      {/* Status Message */}
-      <div className="absolute top-24 left-6 sm:left-32 md:left-48 lg:left-64">
-        <AnimatedText delay={0.8} className="text-white/80 text-sm sm:text-base font-light tracking-relaxed">
+      {/* Status Message - Adjusted for MacBook */}
+      <div className="absolute top-24 left-6 lg:left-32 xl:left-48 2xl:left-64">
+        <AnimatedText delay={0.8} className="text-white/80 text-sm md:text-base font-light tracking-relaxed">
           <div className="flex items-center gap-2 px-2">
-            <span className="relative flex h-2 sm:h-3 w-2 sm:w-3 pr-5">
-              <span className="relative inline-flex rounded-full h-2 sm:h-3 w-2 sm:w-3 bg-green-500"></span>
+            <span className="relative flex h-2 md:h-3 w-2 md:w-3 pr-5">
+              <span className="relative inline-flex rounded-full h-2 md:h-3 w-2 md:w-3 bg-green-500"></span>
             </span>
             <span>Looking to collaborate</span>
           </div>
         </AnimatedText>
       </div>
 
-      {/* Time Display */}
+      {/* Time Display - Adjusted for MacBook */}
       <Clock />
       
-      {/* Animated lines with plus sign - hidden on screens smaller than 1920x1080 */}
-      <div className="absolute inset-0 opacity-60 hidden 2xl:block">
-        <div className="absolute left-8 2xl:left-64 top-0 w-px h-full 
+      {/* Animated lines - Now only visible on larger screens */}
+      <div className="absolute inset-0 opacity-60 hidden xl:block">
+        <div className="absolute left-8 xl:left-64 top-0 w-px h-full 
           bg-gradient-to-b from-transparent via-white to-transparent" />
         
         <div className="absolute bottom-1/4 left-0 h-px w-full 
           bg-gradient-to-r from-transparent via-white to-transparent" />
           
-        {/* Plus sign at intersection*/}
-        <div className="absolute left-8 2xl:left-64 bottom-1/4
+        <div className="absolute left-8 xl:left-64 bottom-1/4
           w-6 h-6 -translate-x-[12px] -translate-y-[-10px]">
           <span className="absolute w-6 h-[2px] bg-white top-1/2 -translate-y-[1px]"></span>
           <span className="absolute h-6 w-[2px] bg-white left-1/2 -translate-x-[1px]"></span>
@@ -43,10 +42,9 @@ export function Hero() {
       </div>
       
       <div className="max-w-screen-xl w-full mx-auto relative">
-        {/* Adjusted vertical positioning */}
-        <div className="space-y-3 sm:space-y-5 md:p-0">
+        <div className="space-y-3 md:space-y-5">
           <div>
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+            <h1 className="text-4xl xs:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
                   Hi I&apos;m{" "}
@@ -56,7 +54,8 @@ export function Hero() {
                       color: '#4fc1ff',
                       textShadow: '0 0 30px rgba(79, 193, 255, 0.3)',
                       willChange: 'transform',
-                      WebkitFontSmoothing: 'antialiased',
+                      WebkitFontSmoothing: 'subpixel-antialiased',
+                      mozOsxFontSmoothing: 'grayscale',
                       transform: 'translateZ(0)'
                     }}
                   >
@@ -97,8 +96,8 @@ function Clock() {
   }
 
   return (
-    <div className="absolute top-32 left-6 sm:left-24 md:left-48 lg:left-64">
-      <AnimatedText delay={1} className="text-white/80 text-sm sm:text-base font-light tracking-relaxed">
+    <div className="absolute top-32 left-6 lg:left-32 xl:left-48 2xl:left-64">
+      <AnimatedText delay={1} className="text-white/80 text-sm md:text-base font-light tracking-relaxed">
         <div className="flex flex-col gap-4">
           <span className="text-white/40 px-2">It's</span>
           <span>{formatTime(time)}</span>
@@ -111,15 +110,15 @@ function Clock() {
 
 function RolesList() {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center 
-      gap-2 sm:gap-6 mt-3 sm:mt-6 
-      text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
+    <div className="flex flex-col md:flex-row items-start md:items-center 
+      gap-2 md:gap-6 mt-3 md:mt-6 
+      text-xl xs:text-2xl md:text-3xl lg:text-4xl 
       overflow-visible">
       <AnimatedText delay={0.4}>
         <span className="font-normal text-white">Developer</span>
       </AnimatedText>
       
-      <span className="hidden sm:block text-white/40">|</span>
+      <span className="hidden md:block text-white/40">|</span>
       
       <AnimatedText delay={0.6}>
         <span className="text-white font-medium cursive">
@@ -127,7 +126,7 @@ function RolesList() {
         </span>
       </AnimatedText>
       
-      <span className="hidden sm:block text-white/40">|</span>
+      <span className="hidden md:block text-white/40">|</span>
       
       <AnimatedText delay={0.8}>
         <span className="text-white/80 font-light">
@@ -140,10 +139,10 @@ function RolesList() {
 
 function Description() {
   return (
-    <div className="overflow-hidden max-w-[90%] sm:max-w-2xl">
+    <div className="overflow-hidden max-w-[90%] md:max-w-2xl">
       <AnimatedText delay={0.8} className="
         bg-clip-text text-white/80
-        text-sm sm:text-lg md:text-xl lg:text-2xl 
+        text-sm md:text-lg lg:text-xl
         font-light leading-relaxed
       ">
         I love everything space, computers and tech.

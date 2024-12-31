@@ -32,16 +32,16 @@ export function Logo() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative scale-75 sm:scale-100">
+    <div ref={containerRef} className="relative scale-[0.65] xs:scale-75 md:scale-90 lg:scale-100">
       {/* Decorative Elements */}
       <div 
         ref={circleRef}
-        className="absolute -z-10 w-24 sm:w-32 h-24 sm:h-32 border border-white/10 rounded-full"
+        className="absolute -z-10 w-20 xs:w-24 md:w-28 lg:w-32 h-20 xs:h-24 md:h-28 lg:h-32 border border-white/10 rounded-full"
         style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
       />
       <div 
         ref={squareRef}
-        className="absolute -z-10 w-20 sm:w-24 h-20 sm:h-24 border border-white/5"
+        className="absolute -z-10 w-16 xs:w-20 md:w-22 lg:w-24 h-16 xs:h-20 md:h-22 lg:h-24 border border-white/5"
         style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(45deg)' }}
       />
       
@@ -50,12 +50,13 @@ export function Logo() {
         <AnimatedText delay={1}>
           <span 
             ref={logoRef}
-            className="text-4xl sm:text-6xl font-bold block text-center"
+            className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-bold block text-center"
             style={{ 
               color: '#4fc1ff',
               textShadow: '0 0 20px rgba(79, 193, 255, 0.3)',
               willChange: 'transform',
-              WebkitFontSmoothing: 'antialiased',
+              WebkitFontSmoothing: 'subpixel-antialiased',
+              mozOsxFontSmoothing: 'grayscale',
               transform: 'translateZ(0)'
             }}
           >

@@ -30,6 +30,13 @@ export default function App() {
           near: 0.1,
           far: 100 
         }}
+        gl={{
+          antialias: true,
+          alpha: false,
+          stencil: false,
+          depth: true,
+          logarithmicDepthBuffer: true
+        }}
       >
         <Suspense fallback={null}>
           <ScrollControls pages={8.5} damping={0.3}>

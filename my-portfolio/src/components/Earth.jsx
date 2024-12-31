@@ -421,7 +421,8 @@ function EarthWithTextures() {
         }
       `,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: true,
+      depthTest: true
     })
   }, [normalMap, displacementMap, specularMap])
 
@@ -535,7 +536,8 @@ function EarthWithTextures() {
         }
       `,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
+      depthTest: true
     })
   }, [displacementMap])
 
