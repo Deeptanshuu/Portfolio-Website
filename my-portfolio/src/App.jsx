@@ -31,16 +31,18 @@ export default function App() {
           far: 100 
         }}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: false,
           stencil: false,
           depth: true,
-          logarithmicDepthBuffer: true
+          logarithmicDepthBuffer: true,
+          precision: 'highp' 
         }}
+        dpr={[1, 2]}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
           <ScrollControls pages={8.5} damping={0.3}>
-            <Hero isMobile={isMobile} />
+            <Hero isMobile={false} />
             <Scroll html>
               <Interface />
             </Scroll>

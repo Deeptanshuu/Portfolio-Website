@@ -67,7 +67,7 @@ const Satellites = memo(({ orbitConfig }) => {
 
   const material = useMemo(() => new THREE.MeshBasicMaterial({
     color: "#4fc1ff",
-    transparent: true,
+    transparent: false,
     opacity: 1
   }), [])
 
@@ -285,7 +285,7 @@ function EarthWithTextures() {
   // Update ref declarations
   const earthRef = useRef()
   const earthDotsRef = useRef()  // Changed from dotsRef to earthDotsRef for clarity
-  const autoRotate = useRef({ x: 0, y: 0 })
+  const autoRotate = useRef({ x: 0, y: 0})
 
   // Optimize texture loading with error handling
   const [normalMap, displacementMap, specularMap] = useMemo(() => {
@@ -299,7 +299,7 @@ function EarthWithTextures() {
 
   // Optimize frame updates with RAF limiting
   const frameCount = useRef(0)
-  const FPS_LIMIT = 60
+  const FPS_LIMIT = 120
   const FPS_INTERVAL = 1000 / FPS_LIMIT
 
   useFrame(({ clock, mouse: mouseCursor, camera, raycaster }) => {
@@ -339,7 +339,7 @@ function EarthWithTextures() {
 
   // Define Earth material
   const earthMaterial = useMemo(() => {
-    return new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
         uTime: { value: 0 },
@@ -391,7 +391,7 @@ function EarthWithTextures() {
         varying vec3 vNormal;
         varying vec3 vPosition;
         varying float vElevation;
-
+  
         void main() {
           vec3 normal = normalize(vNormal);
           vec3 normalMap = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
@@ -411,20 +411,39 @@ function EarthWithTextures() {
           
           float glow = pow(vElevation, 2.0) * 0.3;
           color += glow * uHighlightColor * 0.4;
-
+  
           float fresnel = pow(1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0))), 2.0);
           color += fresnel * 0.25 * uHighlightColor;
-
+  
           float alpha = 0.4 + vElevation * 0.6;
           
           gl_FragColor = vec4(color, alpha);
         }
       `,
       blending: THREE.AdditiveBlending,
-      depthWrite: true,
+      depthWrite: false,
       depthTest: true
-    })
-  }, [normalMap, displacementMap, specularMap])
+    });
+  
+    // Enable particle sorting for proper transparency
+    material.sortParticles = true;
+    
+    // Add custom depth handling
+    material.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        'gl_FragColor = vec4(color, alpha);',
+        `
+          float depth = gl_FragCoord.z / gl_FragCoord.w;
+          float fadeStart = 5.0;
+          float fadeEnd = 15.0;
+          float fadeFactor = smoothstep(fadeEnd, fadeStart, depth);
+          gl_FragColor = vec4(color, alpha * fadeFactor);
+        `
+      );
+    };
+  
+    return material;
+  }, [normalMap, displacementMap, specularMap]);
 
   // Add this near other material uniforms in EarthWithTextures
   const dotsShaderMaterial = useMemo(() => {
@@ -537,12 +556,12 @@ function EarthWithTextures() {
       `,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
     })
   }, [displacementMap])
 
   return (
-    <group position={[0, 0, -8]} scale={1.75}>
+    <group position={[0, 0, -8]} scale={1.65}>
       <primitive object={EARTH_SPHERE} />
       <Moon />
       <ISS />
@@ -557,12 +576,12 @@ function EarthWithTextures() {
       ))}
 
       {/* Earth base */}
-      <points ref={earthRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+      <points ref={earthRef} position={[0, 0, 0.01]} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
         <primitive object={earthMaterial} attach="material" />
       </points>
 
       {/* Earth dots with hover effect */}
-      <points ref={earthDotsRef} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
+      <points ref={earthDotsRef} position={[0, 0, 0.01]} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])}>
         <primitive object={dotsShaderMaterial} attach="material" />
       </points>
       

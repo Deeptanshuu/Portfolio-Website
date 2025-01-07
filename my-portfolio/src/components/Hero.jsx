@@ -5,6 +5,7 @@ import { Earth } from './Earth'
 import { EarthMobile } from './EarthMobile'
 import { Html } from '@react-three/drei'
 
+
 export function Hero({ isMobile }) {
   const [useRealEarth, setUseRealEarth] = useState(false)
   const { width, height } = useThree((state) => state.viewport)
@@ -61,7 +62,8 @@ export function Hero({ isMobile }) {
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 border: 'none',
-                outline: 'none'
+                outline: 'none',
+                zIndex: -99999
               }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
