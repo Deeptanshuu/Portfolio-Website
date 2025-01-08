@@ -48,6 +48,8 @@ export function ProjectCard({ project, index, isEven }) {
   return (
     <a 
       href={`/projects/${project.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
       ref={sectionRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
