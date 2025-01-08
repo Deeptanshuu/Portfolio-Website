@@ -17,45 +17,94 @@ A modern, interactive portfolio website built with React, Three.js, and Tailwind
 my-portfolio/
 ├── src/
 │   ├── components/
-│   │   ├── interface/       # UI interface components
-│   │   ├── navigation/      # Navigation related components
-│   │   ├── Earth.jsx        # 3D Earth visualization
-│   │   ├── EarthMobile.jsx  # Mobile optimized Earth component
-│   │   ├── ProjectCard.jsx  # Project showcase component
-│   │   ├── Hero.jsx        # Hero section component
-│   │   ├── SkillsCloud.jsx # Skills visualization
-│   │   ├── CustomCursor.jsx # Custom cursor implementation
-│   │   └── AnimatedText.jsx # Text animation component
-│   ├── assets/             # Static assets
-│   ├── App.jsx            # Main application component
-│   ├── main.jsx          # Application entry point
-│   └── index.css         # Global styles
-├── public/               # Public assets
-└── package.json         # Project dependencies and scripts
+│   │   ├── interface/
+│   │   │   ├── Projects.jsx     # Projects showcase section
+│   │   │   ├── Hero.jsx        # Hero section with animations
+│   │   │   ├── Logo.jsx        # Logo component
+│   │   │   ├── Contact.jsx     # Contact section
+│   │   │   ├── Interface.jsx   # Main interface wrapper
+│   │   │   └── Divider.jsx     # Section divider component
+│   │   ├── navigation/
+│   │   │   ├── Navigation.jsx    # Main navigation container
+│   │   │   ├── SocialLinks.jsx   # Social media links
+│   │   │   ├── NavigationLinks.jsx # Navigation menu items
+│   │   │   └── MenuButton.jsx     # Mobile menu button
+│   │   ├── Earth.jsx            # 3D Earth visualization
+│   │   ├── EarthMobile.jsx      # Mobile optimized Earth
+│   │   ├── ProjectCard.jsx      # Project showcase cards
+│   │   ├── Hero.jsx            # Main hero section
+│   │   ├── SkillsCloud.jsx     # Skills visualization
+│   │   ├── CustomCursor.jsx    # Custom cursor effects
+│   │   └── AnimatedText.jsx    # Text animation component
+│   ├── assets/                 # Static assets
+│   ├── App.jsx                # Main application component
+│   ├── main.jsx              # Application entry point
+│   └── index.css             # Global styles
+├── public/
+│   ├── fonts/               # Custom font files
+│   ├── textures/           # 3D textures for Earth
+│   ├── projects/           # Project images
+│   ├── resume.pdf          # Resume file
+│   └── github-icon.png     # GitHub icon
+└── package.json           # Project dependencies and scripts
 ```
 
 ## 🔍 Key Components
 
+### Interface Components
+1. **Projects.jsx**
+   - Showcases portfolio projects in a grid layout
+   - Interactive project cards with animations
+   - Filtering and sorting capabilities
+
+2. **Hero.jsx**
+   - Landing section with animated text
+   - Integrated with 3D Earth visualization
+   - Responsive design for all devices
+
+3. **Contact.jsx**
+   - Contact form with validation
+   - Social media links
+   - Professional information display
+
+4. **Interface.jsx**
+   - Main layout wrapper
+   - Handles component organization
+   - Manages global UI state
+
+### Navigation Components
+1. **Navigation.jsx**
+   - Main navigation container
+   - Responsive menu system
+   - Smooth scroll functionality
+
+2. **SocialLinks.jsx**
+   - Social media profile links
+   - Icon animations
+   - External link handling
+
+3. **NavigationLinks.jsx**
+   - Main menu items
+   - Section navigation
+   - Active state management
+
+### 3D Components
 1. **Earth.jsx/EarthMobile.jsx**
    - Interactive 3D Earth visualization using Three.js
    - Optimized versions for desktop and mobile
    - Custom shaders and textures for realistic rendering
+   - Performance optimizations for different devices
 
-2. **ProjectCard.jsx**
-   - Showcases portfolio projects
-   - Interactive cards with hover effects
-   - Links to live projects and repositories
+### Utility Components
+1. **AnimatedText.jsx**
+   - GSAP powered text animations
+   - Split text capabilities
+   - Custom animation sequences
 
-3. **Interface Components**
-   - Hero section with animated text
-   - Projects showcase
-   - Contact section
-   - Navigation elements
-
-4. **Animations**
-   - GSAP powered smooth animations
-   - Custom text animations
+2. **CustomCursor.jsx**
    - Interactive cursor effects
+   - Context-aware cursor states
+   - Smooth animations
 
 ## 🛠️ Setup and Installation
 
