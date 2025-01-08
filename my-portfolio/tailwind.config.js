@@ -6,10 +6,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Satoshi', 'sans-serif'],
-        // Keep any other font families you're using
-      },
     },
   },
   plugins: [],
