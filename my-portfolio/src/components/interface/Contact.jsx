@@ -41,7 +41,7 @@ export function Contact() {
           <div className="overflow-visible">
             <AnimatedText delay={0.2}>
               <a 
-                href="mailto:your@email.com"
+                href="mailto:laldeeptanshu96@gmail.com"
                 className="inline-block mt-8 text-white/80 text-xl border-b-2 border-white/20 pb-2 
                   hover:text-white hover:border-white transition-colors duration-300"
               >
