@@ -7,21 +7,19 @@ import { Divider } from './Divider'
 
 export function Interface() {
   return (
-    <div className="w-screen relative" style={{ pointerEvents: 'none' }}>
-      <div style={{ pointerEvents: 'auto' }}>
-        <Navigation />
-        <Hero />
-        <Divider />
-        <Projects />
-        <Divider />
-        <section id="skills" className="min-h-screen py-20">
-          <div className="max-w-screen-xl mx-auto px-8">
-            <SkillsCloud />
-          </div>
-        </section>
-        <Divider />
-        <Contact />
-      </div>
+    <div className="w-screen">
+      <Navigation />
+      <Hero />
+      <Divider />
+      <Projects />
+      <Divider />
+      <section id="skills" className="min-h-screen py-20">
+        <div className="max-w-screen-xl mx-auto px-8">
+          <SkillsCloud />
+        </div>
+      </section>
+      <Divider />
+      <Contact />
     </div>
   )
 } 

@@ -3,14 +3,13 @@ import { useRef, useMemo, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Earth } from './Earth'
 import { EarthMobile } from './EarthMobile'
-import { Html, useScroll } from '@react-three/drei'
+import { Html } from '@react-three/drei'
+
 
 export function Hero({ isMobile }) {
   const [useRealEarth, setUseRealEarth] = useState(false)
   const { width, height } = useThree((state) => state.viewport)
   const starsRef = useRef()
-  const groupRef = useRef()
-  const scroll = useScroll()
 
   // Generate random star positions
   const starPositions = useMemo(() => {
@@ -40,20 +39,10 @@ export function Hero({ isMobile }) {
       starsRef.current.rotation.y += 0.0001
       starsRef.current.rotation.x += 0.0001
     }
-    
-    // Update group position based on scroll
-    if (groupRef.current) {
-      const scrollOffset = scroll.offset
-      if (scrollOffset < 0.15) {
-        groupRef.current.position.z = scrollOffset * height * 15.5
-      } else {
-        return null;
-      }
-    }
   })
 
   return (
-    <group ref={groupRef}>
+    <>
       {!isMobile && (
         <Html fullscreen style={{ pointerEvents: 'none' }}>
           <div style={{ position: 'absolute', bottom: '40px', left: '20px', pointerEvents: 'auto' }}>
@@ -74,7 +63,7 @@ export function Hero({ isMobile }) {
                 cursor: 'pointer',
                 border: 'none',
                 outline: 'none',
-                zIndex: 99999
+                zIndex: -99999
               }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -118,9 +107,7 @@ export function Hero({ isMobile }) {
         />
       </points>
 
-      <group position={[0, 0, 0]}>
-        {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)}
-      </group>
-    </group>
+      {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)}
+    </>
   )
 } 
