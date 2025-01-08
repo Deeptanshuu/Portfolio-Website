@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import { AnimatedText } from './AnimatedText'
 import gsap from 'gsap'
 
-export function ProjectCard({ project, index, isEven, onClick }) {
+export function ProjectCard({ project, index, isEven }) {
   const sectionRef = useRef(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -46,13 +46,14 @@ export function ProjectCard({ project, index, isEven, onClick }) {
   }, [index])
 
   return (
-    <section
+    <a 
+      href={`/projects/${project.id}`}
       ref={sectionRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group relative border border-white/10 rounded-lg py-12 lg:py-16 first:pt-12 
                  hover:border-white/20 transition-colors duration-300 px-4 lg:px-6
-                 backdrop-blur-sm bg-white/[0.02]"
+                 backdrop-blur-sm bg-white/[0.02] cursor-pointer block"
     >
       <div className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
         {/* Content */}
@@ -87,8 +88,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
 
           <div className="overflow-hidden">
             <AnimatedText delay={0.3}>
-              <button
-                onClick={onClick}
+              <div
                 className="group/button relative px-8 py-3 rounded-full 
                   bg-black/20 lg:bg-white/5 lg:backdrop-blur-sm
                   border border-white/20
@@ -100,7 +100,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
                   shadow-[0_0_15px_rgba(255,255,255,0.05)]
                   hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]"
               >
-                <span>Explore Project</span>
+                <span>Learn More</span>
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
                   className="h-4 w-4 transform transition-transform duration-300 group-hover/button:translate-x-1" 
@@ -113,7 +113,7 @@ export function ProjectCard({ project, index, isEven, onClick }) {
                     clipRule="evenodd" 
                   />
                 </svg>
-              </button>
+              </div>
             </AnimatedText>
           </div>
         </div>
@@ -142,6 +142,6 @@ export function ProjectCard({ project, index, isEven, onClick }) {
         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none
           bg-[radial-gradient(circle_at_${isEven ? '75%' : '25%'}_50%,rgba(255,255,255,0.03)_0%,transparent_70%)]`}
       />
-    </section>
+    </a>
   )
 } 

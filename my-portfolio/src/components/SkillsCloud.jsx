@@ -1,111 +1,86 @@
-import { AnimatedText } from './AnimatedText'
-import { 
-  FaPython, 
-  FaReact, 
-  FaNodeJs, 
-  FaHtml5, 
-  FaGitAlt, 
-  FaDocker, 
-  FaAws 
-} from 'react-icons/fa'
-import { 
-  SiCplusplus, 
-  SiJavascript, 
-  SiThreedotjs, 
-  SiMongodb, 
-  SiMysql 
-} from 'react-icons/si'
-
-const skills = [
-  { name: "Python", color: "#FFD43B", icon: FaPython },
-  { name: "C/C++", color: "#00599C", icon: SiCplusplus },
-  { name: "JavaScript", color: "#F7DF1E", icon: SiJavascript },
-  { name: "React", color: "#61DAFB", icon: FaReact },
-  { name: "Node.js", color: "#339933", icon: FaNodeJs },
-  { name: "Three.js", color: "#FFFFFF", icon: SiThreedotjs },
-  { name: "HTML/CSS", color: "#E34F26", icon: FaHtml5 },
-  { name: "Git", color: "#F05032", icon: FaGitAlt },
-  { name: "SQL", color: "#4479A1", icon: SiMysql },
-  { name: "MongoDB", color: "#47A248", icon: SiMongodb },
-  { name: "Docker", color: "#2496ED", icon: FaDocker },
-  { name: "AWS", color: "#FF9900", icon: FaAws },
-];
+const skills = {
+  "Frontend Development": [
+    { name: "React.js", level: 90 },
+    { name: "Next.js", level: 85 },
+    { name: "TypeScript", level: 80 },
+    { name: "Tailwind CSS", level: 95 },
+    { name: "Three.js", level: 75 },
+    { name: "Framer Motion", level: 85 }
+  ],
+  "Backend Development": [
+    { name: "Node.js", level: 85 },
+    { name: "Express", level: 80 },
+    { name: "Python", level: 85 },
+    { name: "Flask", level: 75 },
+    { name: "MongoDB", level: 85 },
+    { name: "PostgreSQL", level: 70 }
+  ],
+  "Machine Learning": [
+    { name: "TensorFlow", level: 75 },
+    { name: "PyTorch", level: 70 },
+    { name: "scikit-learn", level: 80 },
+    { name: "BERT", level: 75 },
+    { name: "spaCy", level: 70 }
+  ],
+  "Tools & Others": [
+    { name: "Git", level: 90 },
+    { name: "Docker", level: 75 },
+    { name: "AWS", level: 70 },
+    { name: "Vercel", level: 85 },
+    { name: "Figma", level: 80 }
+  ]
+}
 
 export function SkillsCloud() {
   return (
-    <div className="section w-full">
-      <div className="overflow-hidden mb-12">
-        <AnimatedText>
-          <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold block text-white">
-            Skills & Technologies
-          </span>
-        </AnimatedText>
+    <div className="py-20 text-white">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Technical Skills</h2>
+        <p className="text-white/60 max-w-2xl mx-auto">
+          A comprehensive overview of my technical expertise and proficiency levels across different domains.
+        </p>
       </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {skills.map((skill, index) => (
-          <AnimatedText 
-            key={skill.name} 
-            delay={0.1 * index}
-            className="flex items-center justify-center"
-          >
-            <div
-              className="
-                relative
-                bg-white/5
-                backdrop-blur-sm 
-                border border-white/10 
-                rounded-xl
-                p-4 sm:p-6
-                text-white 
-                hover:bg-white/10
-                transition-all 
-                duration-300
-                w-full
-                text-center
-                group
-                hover:scale-105
-                cursor-pointer
-                overflow-hidden
-              "
-              style={{
-                boxShadow: `0 0 0 1px rgba(255,255,255,0.1)`,
-              }}
-            >
-              {/* Glowing outline */}
-              <div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  boxShadow: `inset 0 0 20px ${skill.color}33, 0 0 20px ${skill.color}33`,
-                }}
-              />
-              
-              {/* Glowing background */}
-              <div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
-                style={{
-                  background: `radial-gradient(circle at center, ${skill.color}, transparent 70%)`
-                }}
-              />
-              
-              {/* Icon */}
-              <div 
-                className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl flex items-center justify-center
-                  transform group-hover:scale-110 transition-transform duration-300"
-                style={{
-                  background: `linear-gradient(45deg, ${skill.color}22, transparent)`,
-                  border: `1px solid ${skill.color}22`
-                }}
-              >
-                <skill.icon 
-                  className="w-6 h-6 sm:w-8 sm:h-8 m-4 translate-x-[-5px] translate-y-[-5px] transition-transform duration-300 group-hover:rotate-12" 
-                  style={{ color: skill.color }}
-                />
-              </div>
 
-              <div className="text-base sm:text-lg font-medium px-4">{skill.name} <br className="" /></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {Object.entries(skills).map(([category, skillsList], categoryIndex) => (
+          <div
+            key={category}
+            className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10
+                     hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
+          >
+            <h3 className="text-xl font-semibold mb-6 text-white">{category}</h3>
+            <div className="space-y-4">
+              {skillsList.map((skill, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex justify-between text-sm text-white">
+                    <span>{skill.name}</span>
+                    <span className="text-white/60">{skill.level}%</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1000"
+                      style={{
+                        width: `${skill.level}%`
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          </AnimatedText>
+          </div>
+        ))}
+      </div>
+
+      {/* Floating Badges */}
+      <div className="mt-16 flex flex-wrap justify-center gap-4">
+        {["AWS Certified", "Google Cloud", "React Expert", "ML Engineer"].map((badge, index) => (
+          <div
+            key={index}
+            className="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-white/10
+                     hover:bg-white/10 transition-all duration-300 transform hover:scale-110 text-white"
+          >
+            {badge}
+          </div>
         ))}
       </div>
     </div>

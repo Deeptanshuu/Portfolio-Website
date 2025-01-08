@@ -3,6 +3,7 @@ import { ProjectCard } from '../ProjectCard'
 
 const projects = [
   {
+    id: "gdsc-leaderboard",
     title: "Google Developer Student Club Leaderboard",
     description: "A leaderboard for the Google Developer Student Club that showcases members' achievements and progress in a visually engaging manner for Hacktoberfest 2024.",
     image: "/projects/leaderboard.jpg",
@@ -10,6 +11,7 @@ const projects = [
     link: "https://gdsc-rait.vercel.app/"
   },
   {
+    id: "ai-resume-screener",
     title: "AI Resume Screener",
     description: "A resume screener that uses AI to analyze resumes and provide feedback. BERT model is used for the analysis and spacy for text processing.",
     image: "/projects/resume.png",
@@ -17,6 +19,7 @@ const projects = [
     link: "https://github.com/Deeptanshuu/Resume-Screening-System-ML"
   },
   {
+    id: "tsuki-market",
     title: "Tsuki Market : E-Commerce Platform",
     description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time payment management , seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
     image: "/projects/e-com.jpg",
@@ -24,6 +27,7 @@ const projects = [
     link: "https://tsukimarket.vercel.app/"
   },
   {
+    id: "recipe-recommendation",
     title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",
     image: "/projects/recipe.jpg",
@@ -31,6 +35,7 @@ const projects = [
     link: "https://github.com/Deeptanshuu/Whats-for-dinner"
   },
   {
+    id: "fee-payment",
     title: "Fee Payment System",
     description: "A simple web application that uses simple UI and animations to make the fee payment process more intuitive and user-friendly.",
     image: "/projects/fee.jpg",
