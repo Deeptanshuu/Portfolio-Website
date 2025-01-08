@@ -42,8 +42,10 @@ export default function App() {
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
           <ScrollControls pages={8.5} damping={0.3}>
-            <Hero isMobile={false} />
-            <Scroll html>
+            <group>
+              <Hero isMobile={false} />
+            </group>
+            <Scroll html style={{ width: '100%' }}>
               <Interface />
             </Scroll>
           </ScrollControls>

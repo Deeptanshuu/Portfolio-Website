@@ -42,7 +42,20 @@ export function Navigation() {
     return () => scroll.el.removeEventListener('scroll', handleScroll)
   }, [scroll])
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+    if (!isMenuOpen) {
+      document.body.classList.add('menu-open')
+    } else {
+      document.body.classList.remove('menu-open')
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('menu-open')
+    }
+  }, [])
 
   const scrollToSection = (offset) => {
     scroll.el.scrollTo({
@@ -60,9 +73,21 @@ export function Navigation() {
         fixed top-0 left-0 right-0 z-[9998] 
         bg-black/95 backdrop-blur-lg
         transition-all duration-700 ease-in-out
-        ${isMenuOpen ? 'h-screen' : 'h-0'}
+        ${isMenuOpen ? 'h-[100vh]' : 'h-0'}
         overflow-hidden
-      `}>
+        w-full
+        fixed
+        pointer-events-auto
+      `}
+        style={{
+          position: 'fixed',
+          height: isMenuOpen ? '100vh' : '0',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+      >
         <div className={`
           w-full h-full max-w-screen-xl mx-auto px-6 sm:px-8 sm:pt-24
           flex flex-col sm:flex-row justify-center sm:justify-between items-center sm:items-start
