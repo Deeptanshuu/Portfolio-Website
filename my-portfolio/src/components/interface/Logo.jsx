@@ -32,7 +32,7 @@ export function Logo() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative scale-[0.65] xs:scale-75 md:scale-90 lg:scale-100">
+    <div ref={containerRef} className="relative scale-[0.70] xs:scale-[0.70] sm:scale-75 md:scale-85 lg:scale-100">
       {/* Decorative Elements */}
       <div 
         ref={circleRef}

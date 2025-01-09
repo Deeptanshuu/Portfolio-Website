@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
       {/* Logo */}
-      <div className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:top-12 lg:left-[5rem] scale-75 md:scale-90 lg:scale-100">
+      <div className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:top-12 lg:left-[5rem] scale-100">
         <Logo />
       </div>
       

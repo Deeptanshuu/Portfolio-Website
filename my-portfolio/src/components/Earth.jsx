@@ -363,7 +363,7 @@ function EarthWithTextures() {
         uDisplacementMap: { value: displacementMap },
         uDisplacementScale: { value: 0.55 },
         uOceanColor: { value: new THREE.Color('#0066ff') }, // Brighter blue
-        uTerrainColor: { value: new THREE.Color('#00d4e4') }, // Brighter cyan
+        uTerrainColor: { value: new THREE.Color('#00bdff') }, // Brighter cyan
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
         uOutlineStrength: { value: 1.0 },

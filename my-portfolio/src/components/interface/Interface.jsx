@@ -12,7 +12,7 @@ export function Interface() {
       <Navigation />
       <Hero />
       <Divider />
-      <Projects />
+      <Projects className="mt-28"/>
       <Divider />
       <section id="skills" className="min-h-screen py-20">
         <div className="max-w-screen-xl mx-auto px-8">

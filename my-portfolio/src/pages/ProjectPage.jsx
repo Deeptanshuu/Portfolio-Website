@@ -319,14 +319,14 @@ export function ProjectPage() {
           {/* Navigation buttons */}
           <button
             onClick={handlePrevImage}
-            className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+            className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-gray-500/80 hover:text-gray-500 p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
           >
             <FiChevronLeft className="w-8 h-8" />
           </button>
 
           <button
             onClick={handleNextImage}
-            className="absolute z-50 right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+            className="absolute z-50 right-4 top-1/2 -translate-y-1/2 text-gray-500/80 hover:text-gray-500 p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
           >
             <FiChevronRight className="w-8 h-8" />
           </button>
@@ -413,7 +413,7 @@ export function ProjectPage() {
         {/* Navigation */}
         <div className="mb-8 md:mb-16 flex flex-col sm:flex-row gap-4 justify-between items-center">
           <button 
-            onClick={() => navigate('/')} 
+            onClick={() => window.close()} 
             className="w-full sm:w-auto px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
           >
             <FiArrowLeft className="w-5 h-5" />

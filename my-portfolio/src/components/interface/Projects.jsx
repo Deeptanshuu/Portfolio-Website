@@ -59,13 +59,13 @@ export function Projects() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-8 relative">
           <div className="text-center mb-32">
             <div className="overflow-visible">
-              <AnimatedText className="text-white/80 text-xl sm:text-2xl font-semibold mb-4 uppercase tracking-widest">
+              <AnimatedText className="text-white/90 text-xl sm:text-2xl font-semibold mb-4 uppercase tracking-widest">
                 My Work
               </AnimatedText>
             </div>
               <div className="overflow-visible">
               <AnimatedText>
-                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-clip-text text-white/80">
+                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-clip-text text-white/90">
                   Featured Projects
                 </h2>
               </AnimatedText>
