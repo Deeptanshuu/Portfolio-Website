@@ -1,50 +1,34 @@
 /* eslint-disable react/no-unescaped-entities */
 import { AnimatedText } from '../AnimatedText'
-import { useState, useEffect } from 'react'
 import { Logo } from './Logo'
 
 export function Hero() {
   return (
     <section id="home" className="h-screen flex items-center justify-center px-4 sm:px-8 relative overflow-hidden">
-      {/* Logo - Updated positioning for consistency */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:top-16 lg:left-[5rem]">
+      {/* Logo */}
+      <div className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:top-12 lg:left-[5rem] scale-75 md:scale-90 lg:scale-100">
         <Logo />
       </div>
-
-      {/* Status Message - Adjusted for MacBook */}
-      <div className="absolute top-24 left-6 lg:left-32 xl:left-48 2xl:left-64">
-        <AnimatedText delay={0.8} className="text-white/80 text-sm md:text-base font-light tracking-relaxed">
-          <div className="flex items-center gap-2 px-2">
-            <span className="relative flex h-2 md:h-3 w-2 md:w-3 pr-5">
-              <span className="relative inline-flex rounded-full h-2 md:h-3 w-2 md:w-3 bg-green-500"></span>
-            </span>
-            <span>Looking to collaborate</span>
-          </div>
-        </AnimatedText>
-      </div>
-
-      {/* Time Display - Adjusted for MacBook */}
-      <Clock />
       
-      {/* Animated lines - Now only visible on larger screens */}
-      <div className="absolute inset-0 opacity-60 hidden xl:block">
+      {/* Animated lines - Only visible on 1080p and higher */}
+      <div className="absolute inset-0 opacity-60 hidden 2xl:block">
         <div className="absolute left-8 xl:left-64 top-0 w-px h-full 
-          bg-gradient-to-b from-transparent via-white to-transparent" />
+          bg-gradient-to-b from-transparent via-white to-transparent opacity-50" />
         
         <div className="absolute bottom-1/4 left-0 h-px w-full 
-          bg-gradient-to-r from-transparent via-white to-transparent" />
+          bg-gradient-to-r from-transparent via-white to-transparent opacity-50" />
           
         <div className="absolute left-8 xl:left-64 bottom-1/4
           w-6 h-6 -translate-x-[12px] -translate-y-[-10px]">
-          <span className="absolute w-6 h-[2px] bg-white top-1/2 -translate-y-[1px]"></span>
-          <span className="absolute h-6 w-[2px] bg-white left-1/2 -translate-x-[1px]"></span>
+          <span className="absolute w-6 h-[2px] bg-white top-1/2 -translate-y-[1px] opacity-50"></span>
+          <span className="absolute h-6 w-[2px] bg-white left-1/2 -translate-x-[1px] opacity-50"></span>
         </div>
       </div>
       
       <div className="max-w-screen-xl w-full mx-auto relative">
-        <div className="space-y-3 md:space-y-5">
+        <div className="space-y-3 md:space-y-5 px-4 md:px-8">
           <div>
-            <h1 className="text-4xl xs:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+            <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter overflow-hidden leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               <AnimatedText delay={0.2}>
                 <span className="block text-white">
                   Hi I&apos;m{" "}
@@ -75,44 +59,11 @@ export function Hero() {
   )
 }
 
-function Clock() {
-  const [time, setTime] = useState(new Date())
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date())
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'Asia/Kolkata'
-    })
-  }
-
-  return (
-    <div className="absolute top-32 left-6 lg:left-32 xl:left-48 2xl:left-64">
-      <AnimatedText delay={1} className="text-white/80 text-sm md:text-base font-light tracking-relaxed">
-        <div className="flex flex-col gap-4">
-          <span className="text-white/40 px-2">It's</span>
-          <span>{formatTime(time)}</span>
-          <span className="text-white/40 px-1">for me (IST)</span>
-        </div>
-      </AnimatedText>
-    </div>
-  )
-}
-
 function RolesList() {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center 
-      gap-2 md:gap-6 mt-3 md:mt-6 
-      text-xl xs:text-2xl md:text-3xl lg:text-4xl 
+      gap-1 sm:gap-2 md:gap-6 mt-2 sm:mt-3 md:mt-6 
+      text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl 
       overflow-visible">
       <AnimatedText delay={0.4}>
         <span className="font-normal text-white">Developer</span>
@@ -142,7 +93,7 @@ function Description() {
     <div className="overflow-hidden max-w-[90%] md:max-w-2xl">
       <AnimatedText delay={0.8} className="
         bg-clip-text text-white/80
-        text-sm md:text-lg lg:text-xl
+        text-xs sm:text-sm md:text-lg lg:text-xl
         font-light leading-relaxed
       ">
         I love everything space, computers and tech.
