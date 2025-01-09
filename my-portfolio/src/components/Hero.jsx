@@ -3,21 +3,23 @@ import { useRef, useMemo, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Earth } from './Earth'
 import { EarthMobile } from './EarthMobile'
-import { Html } from '@react-three/drei'
-
+import { Html, useScroll } from '@react-three/drei'
 
 export function Hero({ isMobile }) {
   const [useRealEarth, setUseRealEarth] = useState(false)
   const { width, height } = useThree((state) => state.viewport)
   const starsRef = useRef()
+  const groupRef = useRef()
+  const scroll = useScroll()
 
-  // Generate random star positions
+  // Generate random star positions with reduced count for mobile
   const starPositions = useMemo(() => {
-    const positions = new Float32Array(1000 * 3)
-    const colors = new Float32Array(1000 * 3)
+    const starCount = isMobile ? 100 : 1000 // Reduced star count
+    const positions = new Float32Array(starCount * 3)
+    const colors = new Float32Array(starCount * 3)
     
-    for (let i = 0; i < 1000; i++) {
-      const radius = 5 + Math.random() * 15
+    for (let i = 0; i < starCount; i++) {
+      const radius = 10 + Math.random() * 12 // Adjusted radius range
       const theta = Math.random() * Math.PI * 2
       const phi = Math.acos(Math.random() * 2 - 1)
       
@@ -25,26 +27,39 @@ export function Hero({ isMobile }) {
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
       positions[i * 3 + 2] = radius * Math.cos(phi)
 
-      const brightness = 0.5 + Math.random() * 0.5
+      const brightness = 0.3 + Math.random() * 0.35 // Reduced brightness range
       colors[i * 3] = brightness
       colors[i * 3 + 1] = brightness
-      colors[i * 3 + 2] = brightness + Math.random() * 0.2
+      colors[i * 3 + 2] = brightness
     }
 
     return { positions, colors }
-  }, [])
+  }, [isMobile])
 
+  // Optimize frame updates
+  const frameCount = useRef(0)
   useFrame((state) => {
-    if (starsRef.current) {
-      starsRef.current.rotation.y += 0.0001
-      starsRef.current.rotation.x += 0.0001
+    frameCount.current++
+    
+    // Limit star rotation updates
+    if (starsRef.current && frameCount.current % 2 === 0) {
+      starsRef.current.rotation.y += 0.00005
+      starsRef.current.rotation.x += 0.00005
+    }
+
+    // Update group position based on scroll with optimized calculations
+    if (groupRef.current && !isMobile) {
+      const scrollOffset = scroll.offset
+      if (scrollOffset < 0.15) {
+        groupRef.current.position.z = Math.floor(scrollOffset * height * 15.5 * 100) / 100
+      }
     }
   })
 
   return (
-    <>
+    <group ref={groupRef}>
       {!isMobile && (
-        <Html fullscreen style={{ pointerEvents: 'none' }}>
+        <Html fullscreen style={{ pointerEvents: 'none', zIndex: 1 }}>
           <div style={{ position: 'absolute', bottom: '40px', left: '20px', pointerEvents: 'auto' }}>
             <button
               onClick={() => setUseRealEarth(!useRealEarth)}
@@ -63,7 +78,7 @@ export function Hero({ isMobile }) {
                 cursor: 'pointer',
                 border: 'none',
                 outline: 'none',
-                zIndex: -99999
+                zIndex: 99999
               }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -83,7 +98,7 @@ export function Hero({ isMobile }) {
         </Html>
       )}
 
-      <points ref={starsRef}>
+      <points ref={starsRef} renderOrder={-1}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -99,15 +114,18 @@ export function Hero({ isMobile }) {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={isMobile ? 0.05 : 0.02}
+          size={isMobile ? 0.08 : 0.03}
           vertexColors
           transparent
-          opacity={0.8}
+          opacity={0.6}
           sizeAttenuation={true}
+          depthWrite={false}
         />
       </points>
 
-      {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)}
-    </>
+      <group position={[0, 0, 0]} renderOrder={1}>
+        {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)}
+      </group>
+    </group>
   )
 } 

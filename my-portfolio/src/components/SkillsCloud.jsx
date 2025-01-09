@@ -1,7 +1,7 @@
 const skills = {
   "Frontend Development": [
     { name: "React.js", level: 90 },
-    { name: "Next.js", level: 85 },
+    { name: "Chakra UI", level: 85 },
     { name: "TypeScript", level: 80 },
     { name: "Tailwind CSS", level: 95 },
     { name: "Three.js", level: 75 },
@@ -23,11 +23,11 @@ const skills = {
     { name: "spaCy", level: 70 }
   ],
   "Tools & Others": [
-    { name: "Git", level: 90 },
+    { name: "Git/GitHub", level: 90 },
     { name: "Docker", level: 75 },
     { name: "AWS", level: 70 },
     { name: "Vercel", level: 85 },
-    { name: "Figma", level: 80 }
+    { name: "DevOps", level: 80 }
   ]
 }
 

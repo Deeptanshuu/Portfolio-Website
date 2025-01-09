@@ -8,9 +8,27 @@ import { CustomCursor } from './components/CustomCursor'
 import { ProjectPage } from './pages/ProjectPage'
 
 function HomePage() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i;
+      setIsMobile(mobileRegex.test(userAgent.toLowerCase()));
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className="h-screen bg-black">
-      <CustomCursor />
+      {!isMobile && <CustomCursor />}
       <Canvas
         camera={{ 
           position: [0, 0, 8],
@@ -30,7 +48,7 @@ function HomePage() {
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
           <ScrollControls pages={12.5} damping={0.3}>
-            <Hero isMobile={false} />
+            <Hero isMobile={isMobile} />
             <Scroll html>
               <Interface />
             </Scroll>
@@ -42,20 +60,6 @@ function HomePage() {
 }
 
 export default function App() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    // Check if device is mobile using User Agent
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera
-      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
-      setIsMobile(mobileRegex.test(userAgent.toLowerCase()))
-    }
-
-    // Initial check
-    checkMobile()
-  }, [])
-
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />

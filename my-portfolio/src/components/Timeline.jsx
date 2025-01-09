@@ -4,70 +4,70 @@ const timelineData = [
   {
     year: "2024",
     title: "Google Developer Student Club Lead",
-    description: "Leading a community of student developers, organizing workshops, and managing technical projects.",
     company: "RAIT, DY Patil University"
   },
   {
     year: "2023",
     title: "Machine Learning Engineer",
-    description: "Worked on AI-powered resume screening system using BERT and spaCy for natural language processing.",
     company: "Personal Project"
   },
   {
     year: "2023",
     title: "Full Stack Developer Intern",
-    description: "Developed and maintained web applications using React.js and Node.js. Implemented new features and optimized performance.",
     company: "Tsuki Market"
   },
   {
     year: "2022",
     title: "Web Development Lead",
-    description: "Led the development of multiple web projects and mentored junior developers.",
     company: "College Technical Team"
   }
 ]
 
 export function Timeline() {
   return (
-    <div className="relative py-20 text-white">
-      {/* Center Line */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+    <div className="py-12 text-white">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="relative">
+          {/* Center Line */}
+          <div className="absolute md:left-1/2 left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-blue-500 via-purple-500 to-transparent" />
 
-      <div className="relative max-w-7xl mx-auto px-4">
-        {timelineData.map((item, index) => (
-          <div
-            key={index}
-            className={`flex items-center mb-20 last:mb-0 ${
-              index % 2 === 0 ? 'justify-start' : 'justify-end'
-            }`}
-          >
-            <div
-              className={`relative w-full md:w-[calc(50%-2rem)] p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 
-                ${index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'}
-                hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]`}
+          {timelineData.map((item, index) => (
+            <div 
+              key={index} 
+              className={`flex md:justify-center items-center mb-8 last:mb-0 ${
+                index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+              }`}
             >
-              {/* Year Badge */}
-              <div className="absolute top-0 transform -translate-y-1/2 bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full">
-                <span className="text-sm font-medium text-white">{item.year}</span>
+              {/* Content for larger screens */}
+              <div className={`
+                md:w-[45%] w-full pl-12 md:pl-0
+                ${index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'}
+              `}>
+                <div className="group bg-white/5 rounded-lg p-4 hover:bg-white/15 transition-all duration-300">
+                  <div className={`flex items-center gap-4 mb-2 ${
+                    index % 2 === 0 ? 'md:justify-end justify-between' : 'justify-between'
+                  }`}>
+                    <h3 className="text-lg font-semibold order-1 md:order-none">{item.title}</h3>
+                    <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 
+                                   border border-white/10 text-sm font-medium order-2 md:order-none
+                                   shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                      {item.year}
+                    </span>
+                  </div>
+                  <p className="text-sm text-white/60">{item.company}</p>
+                </div>
               </div>
 
-              {/* Content */}
-              <div className="mt-4">
-                <h3 className="text-xl font-bold mb-2 text-white">{item.title}</h3>
-                <p className="text-white/60 text-sm mb-3">{item.company}</p>
-                <p className="text-white/80">{item.description}</p>
+              {/* Dot */}
+              <div className="absolute left-0 md:relative">
+                <div className="absolute left-[4px] md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 w-2 h-2 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
               </div>
 
-              {/* Connector */}
-              <div
-                className={`absolute top-1/2 transform -translate-y-1/2 w-8 h-px bg-white/20
-                  ${index % 2 === 0 ? 'right-0 translate-x-full' : 'left-0 -translate-x-full'}`}
-              >
-                <div className={`absolute ${index % 2 === 0 ? 'right-0' : 'left-0'} top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full bg-white/20`} />
-              </div>
+              {/* Empty space for the other side - hidden on mobile */}
+              <div className="hidden md:block md:w-[45%]" />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )
