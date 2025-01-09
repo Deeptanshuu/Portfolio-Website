@@ -12,14 +12,9 @@ const timelineData = [
     company: "Personal Project"
   },
   {
-    year: "2023",
+    year: "2022",
     title: "Full Stack Developer Intern",
     company: "Tsuki Market"
-  },
-  {
-    year: "2022",
-    title: "Web Development Lead",
-    company: "College Technical Team"
   }
 ]
 
