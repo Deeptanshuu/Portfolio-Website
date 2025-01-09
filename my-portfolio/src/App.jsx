@@ -47,7 +47,7 @@ function HomePage() {
         dpr={[1, 2]}
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
-          <ScrollControls pages={12.5} damping={0.3}>
+          <ScrollControls pages={11} damping={0.3}>
             <Hero isMobile={isMobile} />
             <Scroll html>
               <Interface />

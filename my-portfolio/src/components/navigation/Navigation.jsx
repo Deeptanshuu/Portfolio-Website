@@ -14,7 +14,7 @@ const navItems = [
 
 const socialLinks = [
   { label: 'GitHub', url: 'https://github.com/Deeptanshuu' },
-  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/deeptanshu-lal-6868a4187/' },
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/deeptanshu-l-6868a4187' },
 ]
 
 export function Navigation() {

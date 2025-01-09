@@ -130,7 +130,7 @@ function RolesList() {
       
       <AnimatedText delay={0.8}>
         <span className="text-white/80 font-light">
-          Creator
+          Programmer
         </span>
       </AnimatedText>
     </div>
