@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useRef, useMemo, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
+import * as THREE from 'three'
 import { Earth } from './Earth'
 import { EarthMobile } from './EarthMobile'
 import { Html, useScroll } from '@react-three/drei'
@@ -51,7 +52,11 @@ export function Hero({ isMobile }) {
     if (groupRef.current && !isMobile) {
       const scrollOffset = scroll.offset
       if (scrollOffset < 0.15) {
-        groupRef.current.position.z = Math.floor(scrollOffset * height * 15.5 * 100) / 100
+        // Use smoother easing for scroll movement
+        const ease = (t) => t * (2 - t); // Quadratic ease-out
+        const normalizedScroll = ease(scrollOffset / 0.15);
+        const targetZ = normalizedScroll * height * 2; // Reduced multiplier
+        groupRef.current.position.z = targetZ;
       }
     }
   })
@@ -98,7 +103,7 @@ export function Hero({ isMobile }) {
         </Html>
       )}
 
-      <points ref={starsRef} renderOrder={-1}>
+      <points ref={starsRef} renderOrder={-1} position={[0, 0, -10]}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -116,10 +121,13 @@ export function Hero({ isMobile }) {
         <pointsMaterial
           size={isMobile ? 0.08 : 0.03}
           vertexColors
-          transparent
-          opacity={0.6}
+          transparent={false}
+          opacity={1}
           sizeAttenuation={true}
-          depthWrite={false}
+          depthWrite={true}
+          depthTest={true}
+          alphaTest={0.5}
+          blending={THREE.NoBlending}
         />
       </points>
 
