@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiExternalLink, FiGithub } from 'react-icons/fi'
+import { FiArrowLeft, FiExternalLink, FiGithub, FiX, FiZoomIn, FiZoomOut, FiMaximize2 } from 'react-icons/fi'
 import { BsCalendarEvent, BsPeople } from 'react-icons/bs'
 import { MdWorkOutline } from 'react-icons/md'
 import { HiCheck } from 'react-icons/hi'
+import { useState, useCallback, useEffect } from 'react'
 
 const projects = [
   {
@@ -11,7 +12,7 @@ const projects = [
     description: "A leaderboard for the Google Developer Student Club that showcases members' achievements and progress in a visually engaging manner for Hacktoberfest 2024.",
     image: "/projects/leaderboard.jpg",
     images: [
-      "/projects/leaderboard.jpg",
+      "/projects/leaderboard/leaderboard.jpg",
       "/projects/leaderboard/2.jpg",
       "/projects/leaderboard/3.jpg",
       "/projects/leaderboard/4.jpg",
@@ -24,8 +25,7 @@ const projects = [
     features: [
       "Real-time contribution tracking",
       "Interactive leaderboard with filters",
-      "Individual member profiles",
-      "Achievement badges system",
+      "Dark Mode",
       "Responsive design for all devices"
     ],
     techStack: {
@@ -40,15 +40,14 @@ const projects = [
     ],
     timeline: "September 2023 - October 2023",
     role: "Lead Developer",
-    team: ["Deeptanshu Lal", "Team Member 2", "Team Member 3"]
+    team: ["Deeptanshu Lal", "Kanishk"]
   },
   {
     id: "ai-resume-screener",
     title: "AI Resume Screener",
     description: "A resume screener that uses AI to analyze resumes and provide feedback. BERT model is used for the analysis and spacy for text processing.",
-    image: "/projects/resume.png",
     images: [
-      "/projects/resume.png",
+      "/projects/resume/resume.png",
       "/projects/resume/2.jpg",
       "/projects/resume/3.jpg",
       "/projects/resume/4.jpg",
@@ -83,9 +82,8 @@ const projects = [
     id: "tsuki-market",
     title: "Tsuki Market : E-Commerce Platform",
     description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time payment management, seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
-    image: "/projects/e-com.jpg",
     images: [
-      "/projects/e-com.jpg",
+      "/projects/e-com/e-com.jpg",
       "/projects/e-com/2.jpg",
       "/projects/e-com/3.jpg",
       "/projects/e-com/4.jpg",
@@ -93,7 +91,7 @@ const projects = [
     ],
     tags: ["React.js", "Tailwind", "MongoDB"],
     link: "https://tsukimarket.vercel.app/",
-    github: "https://github.com/Deeptanshuu/tsuki-market",
+    github: "https://github.com/Deeptanshuu/RAIT-INTERSHIP",
     longDescription: "Tsuki Market is a full-featured e-commerce platform that combines modern design with powerful functionality. It includes real-time inventory management, secure payment processing, and an intuitive shopping experience enhanced by custom animations.",
     features: [
       "Real-time inventory tracking",
@@ -115,15 +113,14 @@ const projects = [
     ],
     timeline: "April 2023 - June 2023",
     role: "Full Stack Developer",
-    team: ["Deeptanshu Lal", "Team Member 2"]
+    team: ["Deeptanshu Lal"]
   },
   {
     id: "recipe-recommendation",
     title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",
-    image: "/projects/recipe.jpg",
     images: [
-      "/projects/recipe.jpg",
+      "/projects/recipe/recipe.jpg",
       "/projects/recipe/2.jpg",
       "/projects/recipe/3.jpg",
       "/projects/recipe/4.jpg",
@@ -159,9 +156,8 @@ const projects = [
     id: "fee-payment",
     title: "Fee Payment System",
     description: "A simple web application that uses simple UI and animations to make the fee payment process more intuitive and user-friendly.",
-    image: "/projects/fee.jpg",
     images: [
-      "/projects/fee.jpg",
+      "/projects/fee/fee.jpg",
       "/projects/fee/2.jpg",
       "/projects/fee/3.jpg",
       "/projects/fee/4.jpg",
@@ -198,9 +194,76 @@ const projects = [
 export function ProjectPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [scale, setScale] = useState(1)
+  const [isDragging, setIsDragging] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   
   const project = projects.find(p => p.id === id)
   
+  const handleImageClick = (image) => {
+    setSelectedImage(image)
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeModal = () => {
+    setSelectedImage(null)
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
+    document.body.style.overflow = 'auto'
+  }
+
+  const handleWheel = useCallback((e) => {
+    if (!selectedImage) return
+    e.preventDefault()
+    const delta = e.deltaY * -0.01
+    setScale(prevScale => Math.min(Math.max(0.5, prevScale + delta), 4))
+  }, [selectedImage])
+
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    return () => window.removeEventListener('wheel', handleWheel)
+  }, [handleWheel])
+
+  const handleZoomIn = () => {
+    setScale(prevScale => Math.min(prevScale + 0.5, 4))
+  }
+
+  const handleZoomOut = () => {
+    setScale(prevScale => Math.max(prevScale - 0.5, 0.5))
+  }
+
+  const handleReset = () => {
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
+  }
+
+  const handleMouseDown = (e) => {
+    if (e.button === 0) { // Left click only
+      setIsDragging(true)
+      setDragStart({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y
+      })
+    }
+  }
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
   if (!project) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 md:p-8">
@@ -218,11 +281,70 @@ export function ProjectPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={closeModal}
+        >
+          {/* Close button */}
+          <button 
+            onClick={closeModal}
+            className="absolute z-50 top-4 right-4 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            <FiX className="w-6 h-6" />
+          </button>
+
+          {/* Zoom controls */}
+          <div className="absolute z-50 bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <button
+              onClick={(e) => { e.stopPropagation(); handleZoomOut(); }}
+              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+            >
+              <FiZoomOut className="w-6 h-6" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleReset(); }}
+              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+            >
+              <FiMaximize2 className="w-6 h-6" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleZoomIn(); }}
+              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+            >
+              <FiZoomIn className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Image container */}
+          <div
+            className="relative cursor-move"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={selectedImage} 
+              alt="Project screenshot" 
+              className="max-w-full max-h-[90vh] object-contain rounded-lg transition-transform duration-200"
+              style={{
+                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                cursor: isDragging ? 'grabbing' : 'grab'
+              }}
+              draggable="false"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <div className="relative h-[40vh] md:h-[60vh] overflow-hidden">
+      <div className="relative h-[40vh] md:h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img 
-            src={project.image} 
+            src={project.images[0]} 
             alt={project.title}
             className="w-full h-full object-cover"
           />
@@ -333,69 +455,79 @@ export function ProjectPage() {
               <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Project Gallery</h2>
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 {/* Main Image */}
-                <div className="md:col-span-8 relative aspect-[16/10] rounded-xl overflow-hidden group">
+                <div 
+                  className="md:col-span-8 relative aspect-[16/10] rounded-xl overflow-hidden group cursor-pointer"
+                  onClick={() => handleImageClick(project.images[0])}
+                >
                   <img 
                     src={project.images[0]}
                     alt={`${project.title} main screenshot`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Main Dashboard View</p>
+                    <p className="text-white p-6">Click to view fullscreen</p>
                   </div>
                 </div>
 
                 {/* Side Images */}
                 <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-4">
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden group">
+                  <div 
+                    className="relative aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer"
+                    onClick={() => handleImageClick(project.images[1])}
+                  >
                     <img 
                       src={project.images[1]}
                       alt={`${project.title} feature screenshot`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                      <p className="text-white p-4">Feature Overview</p>
+                      <p className="text-white p-4">Click to view fullscreen</p>
                     </div>
                   </div>
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden group">
+                  <div 
+                    className="relative aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer"
+                    onClick={() => handleImageClick(project.images[2])}
+                  >
                     <img 
                       src={project.images[2]}
                       alt={`${project.title} detail screenshot`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                      <p className="text-white p-4">Detailed View</p>
+                      <p className="text-white p-4">Click to view fullscreen</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Images */}
-                <div className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group">
+                <div 
+                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer"
+                  onClick={() => handleImageClick(project.images[3])}
+                >
                   <img 
                     src={project.images[3]}
                     alt={`${project.title} mobile screenshot`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Mobile View</p>
+                    <p className="text-white p-6">Click to view fullscreen</p>
                   </div>
                 </div>
 
-                <div className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group">
+                <div 
+                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer"
+                  onClick={() => handleImageClick(project.images[4])}
+                >
                   <img 
                     src={project.images[4]}
                     alt={`${project.title} feature screenshot`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Additional Features</p>
+                    <p className="text-white p-6">Click to view fullscreen</p>
                   </div>
                 </div>
               </div>
-
-              {/* Image Modal - Add if needed */}
-              {/* <div className="fixed inset-0 bg-black/90 z-50 hidden">
-                <img src="" alt="" className="w-full h-full object-contain" />
-              </div> */}
             </section>
           </div>
 
