@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiExternalLink, FiGithub, FiX, FiZoomIn, FiZoomOut, FiMaximize2 } from 'react-icons/fi'
+import { FiArrowLeft, FiExternalLink, FiGithub, FiX, FiZoomIn, FiZoomOut, FiMaximize2, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { BsCalendarEvent, BsPeople } from 'react-icons/bs'
 import { MdWorkOutline } from 'react-icons/md'
 import { HiCheck } from 'react-icons/hi'
@@ -20,7 +20,7 @@ const projects = [
     ],
     tags: ["React.js", "Chakra UI", "MongoDB", "AWS"],
     link: "https://gdsc-rait.vercel.app/",
-    github: "https://github.com/Deeptanshuu/gdsc-leaderboard",
+    github: "https://github.com/Deeptanshuu/bookish-adventure",
     longDescription: "The GDSC Leaderboard is a comprehensive platform designed to track and showcase member contributions during Hacktoberfest 2024. It features real-time updates, detailed progress tracking, and interactive visualizations of member achievements.",
     features: [
       "Real-time contribution tracking",
@@ -54,7 +54,7 @@ const projects = [
       "/projects/resume/5.jpg",
     ],
     tags: ["React.js", "Tailwind", "MongoDB"],
-    link: "https://resume-screener.vercel.app/",
+    link: "",
     github: "https://github.com/Deeptanshuu/Resume-Screening-System-ML",
     longDescription: "The AI Resume Screener leverages advanced machine learning models to provide intelligent resume analysis. Using BERT for natural language understanding and spaCy for text processing, it offers detailed feedback on resume quality and job fit.",
     features: [
@@ -127,7 +127,7 @@ const projects = [
       "/projects/recipe/5.jpg",
     ],
     tags: ["React.js", "Flask", "Python"],
-    link: "https://recipe-recommender.vercel.app/",
+    link: "https://whats-for-dinner2.vercel.app/",
     github: "https://github.com/Deeptanshuu/Whats-for-dinner",
     longDescription: "This Recipe Recommendation System uses advanced machine learning techniques to suggest personalized recipes. It employs TF-IDF vectorization to understand user preferences and provides tailored cooking suggestions through an intuitive interface.",
     features: [
@@ -165,7 +165,7 @@ const projects = [
     ],
     tags: ["HTML", "CSS", "Express"],
     link: "",
-    github: "https://github.com/Deeptanshuu/fee-payment-system",
+    github: "https://github.com/Deeptanshuu/MINI-PROJECT-CENTRALIZED-PAYMENT-PORTAL-FOR-COLLEGE-APPLICATION-",
     longDescription: "The Fee Payment System simplifies the complex process of educational fee payments through an intuitive interface. It features step-by-step payment guidance, transaction history, and receipt generation, all wrapped in a user-friendly design.",
     features: [
       "Intuitive payment workflow",
@@ -199,14 +199,35 @@ export function ProjectPage() {
   const [isDragging, setIsDragging] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   
   const project = projects.find(p => p.id === id)
   
   const handleImageClick = (image) => {
+    const index = project.images.findIndex(img => img === image)
+    setCurrentImageIndex(index)
     setSelectedImage(image)
     setScale(1)
     setPosition({ x: 0, y: 0 })
     document.body.style.overflow = 'hidden'
+  }
+
+  const handleNextImage = (e) => {
+    e.stopPropagation()
+    const nextIndex = (currentImageIndex + 1) % project.images.length
+    setCurrentImageIndex(nextIndex)
+    setSelectedImage(project.images[nextIndex])
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
+  }
+
+  const handlePrevImage = (e) => {
+    e.stopPropagation()
+    const prevIndex = (currentImageIndex - 1 + project.images.length) % project.images.length
+    setCurrentImageIndex(prevIndex)
+    setSelectedImage(project.images[prevIndex])
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
   }
 
   const closeModal = () => {
@@ -294,6 +315,26 @@ export function ProjectPage() {
           >
             <FiX className="w-6 h-6" />
           </button>
+
+          {/* Navigation buttons */}
+          <button
+            onClick={handlePrevImage}
+            className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            <FiChevronLeft className="w-8 h-8" />
+          </button>
+
+          <button
+            onClick={handleNextImage}
+            className="absolute z-50 right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            <FiChevronRight className="w-8 h-8" />
+          </button>
+
+          {/* Image counter */}
+          <div className="absolute z-50 top-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white/90">
+            {currentImageIndex + 1} / {project.images.length}
+          </div>
 
           {/* Zoom controls */}
           <div className="absolute z-50 bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
@@ -451,12 +492,12 @@ export function ProjectPage() {
             </section>
 
             {/* Gallery */}
-            <section>
+            <section className="relative">
               <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Project Gallery</h2>
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                {/* Main Image */}
+                {/* Main large image */}
                 <div 
-                  className="md:col-span-8 relative aspect-[16/10] rounded-xl overflow-hidden group cursor-pointer"
+                  className="md:col-span-8 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
                   onClick={() => handleImageClick(project.images[0])}
                 >
                   <img 
@@ -469,10 +510,10 @@ export function ProjectPage() {
                   </div>
                 </div>
 
-                {/* Side Images */}
+                {/* Side column */}
                 <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-4">
                   <div 
-                    className="relative aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer"
+                    className="relative aspect-video md:aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
                     onClick={() => handleImageClick(project.images[1])}
                   >
                     <img 
@@ -485,7 +526,7 @@ export function ProjectPage() {
                     </div>
                   </div>
                   <div 
-                    className="relative aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer"
+                    className="relative aspect-video md:aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
                     onClick={() => handleImageClick(project.images[2])}
                   >
                     <img 
@@ -499,9 +540,9 @@ export function ProjectPage() {
                   </div>
                 </div>
 
-                {/* Bottom Images */}
+                {/* Bottom row */}
                 <div 
-                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer"
+                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
                   onClick={() => handleImageClick(project.images[3])}
                 >
                   <img 
@@ -510,12 +551,12 @@ export function ProjectPage() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Click to view fullscreen</p>
+                    <p className="text-white p-4">Click to view fullscreen</p>
                   </div>
                 </div>
 
                 <div 
-                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer"
+                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
                   onClick={() => handleImageClick(project.images[4])}
                 >
                   <img 
@@ -524,8 +565,13 @@ export function ProjectPage() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Click to view fullscreen</p>
+                    <p className="text-white p-4">Click to view fullscreen</p>
                   </div>
+                </div>
+
+                {/* Image count indicator */}
+                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white/90">
+                  {project.images.length} images
                 </div>
               </div>
             </section>

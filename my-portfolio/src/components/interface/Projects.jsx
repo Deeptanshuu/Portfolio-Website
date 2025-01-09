@@ -6,7 +6,7 @@ const projects = [
     id: "gdsc-leaderboard",
     title: "Google Developer Student Club Leaderboard",
     description: "A leaderboard for the Google Developer Student Club that showcases members' achievements and progress in a visually engaging manner for Hacktoberfest 2024.",
-    image: "/projects/leaderboard.jpg",
+    image: "/projects/leaderboard/leaderboard.jpg",
     tags: ["React.js", "Chakra UI", "MongoDB", "AWS"],
     link: "https://gdsc-rait.vercel.app/"
   },
@@ -14,7 +14,7 @@ const projects = [
     id: "ai-resume-screener",
     title: "AI Resume Screener",
     description: "A resume screener that uses AI to analyze resumes and provide feedback. BERT model is used for the analysis and spacy for text processing.",
-    image: "/projects/resume.png",
+    image: "/projects/resume/resume.png",
     tags: ["React.js", "Tailwind", "MongoDB"],
     link: "https://github.com/Deeptanshuu/Resume-Screening-System-ML"
   },
@@ -22,7 +22,7 @@ const projects = [
     id: "tsuki-market",
     title: "Tsuki Market : E-Commerce Platform",
     description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time payment management , seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
-    image: "/projects/e-com.jpg",
+    image: "/projects/e-com/e-com.jpg",
     tags: ["React.js", "Tailwind", "MongoDB"],
     link: "https://tsukimarket.vercel.app/"
   },
@@ -30,7 +30,7 @@ const projects = [
     id: "recipe-recommendation",
     title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",
-    image: "/projects/recipe.jpg",
+    image: "/projects/recipe/recipe.jpg",
     tags: ["React.js", "Flask", "Python"],
     link: "https://github.com/Deeptanshuu/Whats-for-dinner"
   },
@@ -38,7 +38,7 @@ const projects = [
     id: "fee-payment",
     title: "Fee Payment System",
     description: "A simple web application that uses simple UI and animations to make the fee payment process more intuitive and user-friendly.",
-    image: "/projects/fee.jpg",
+    image: "/projects/fee/fee.jpg",
     tags: ["HTML", "CSS", "Express"],
     link: ""
   }
