@@ -20,7 +20,7 @@ const projects = [
     ],
     tags: ["React.js", "Chakra UI", "MongoDB", "AWS"],
     link: "https://gdsc-rait.vercel.app/",
-    github: "https://github.com/Deeptanshuu/bookish-adventure",
+    github: "https://github.com/Deeptanshuu/gdsc-leaderboard",
     longDescription: "The GDSC Leaderboard is a comprehensive platform designed to track and showcase member contributions during Hacktoberfest 2024. It features real-time updates, detailed progress tracking, and interactive visualizations of member achievements.",
     features: [
       "Real-time contribution tracking",
