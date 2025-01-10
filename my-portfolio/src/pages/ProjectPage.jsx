@@ -116,6 +116,43 @@ const projects = [
     team: ["Deeptanshu Lal"]
   },
   {
+    id: "role-based-dashboard",
+    title: "Role Based Dashboard",
+    description: "A comprehensive RBAC system built with React, TailwindCSS and Chakra UI, designed to manage organizational hierarchies, user roles, and departmental structures.",
+    images: [
+      "/projects/dashboard/dashboard.jpg",
+      "/projects/dashboard/2.jpg",
+      "/projects/dashboard/3.jpg",
+      "/projects/dashboard/4.jpg",
+      "/projects/dashboard/5.jpg",
+    ],
+    tags: ["React.js", "Tailwind", "Chakra UI", "Node.js", "Express"],
+    link: "https://dashboard-deep.vercel.app/",
+    github: "https://github.com/Deeptanshuu/role-based-dashboard",
+    longDescription: "A sophisticated Role-Based Access Control (RBAC) dashboard that enables organizations to efficiently manage user permissions, roles, and departmental hierarchies. The system features dynamic permission management, real-time updates, and an intuitive interface for managing organizational structures.",
+    features: [
+      "Dynamic role-based access control",
+      "Hierarchical department management",
+      "Real-time permission updates",
+      "User activity monitoring",
+      "Customizable dashboard views"
+    ],
+    techStack: {
+      frontend: ["React.js", "Tailwind CSS", "Chakra UI", "Redux"],
+      backend: ["Node.js", "Express", "MongoDB"],
+      authentication: ["JWT", "bcrypt"],
+      deployment: ["Vercel", "MongoDB Atlas"]
+    },
+    challenges: [
+      "Implementing complex role hierarchies and inheritance",
+      "Managing real-time permission updates across the system",
+      "Creating an intuitive interface for complex permission management"
+    ],
+    timeline: "November 2023 - December 2023",
+    role: "Full Stack Developer",
+    team: ["Deeptanshu Lal"]
+  },
+  {
     id: "recipe-recommendation",
     title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",

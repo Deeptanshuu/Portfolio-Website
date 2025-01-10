@@ -27,6 +27,14 @@ const projects = [
     link: "https://tsukimarket.vercel.app/"
   },
   {
+    id: "role-based-dashboard",
+    title: "Role Based Dashboard",
+    description: "A comprehensive RBAC system built with React, TailwindCSS and Chakra UI, designed to manage organizational hierarchies, user roles, and departmental structures.",
+    image: "/projects/dashboard/dashboard.jpg",
+    tags: ["React.js", "Tailwind", "Chakra UI", "Node.js", "Express"],
+    link: "https://dashboard-deep.vercel.app/"
+  },
+  {
     id: "recipe-recommendation",
     title: "ML based Recipe Recommendation System",
     description: "A TF-IDF vectorization based Recipe Recommendation System that recommends recipes based on the user's input using Flask and Python.",
