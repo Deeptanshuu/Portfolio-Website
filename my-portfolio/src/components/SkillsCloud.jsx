@@ -45,7 +45,7 @@ export function SkillsCloud() {
         {Object.entries(skills).map(([category, skillsList], categoryIndex) => (
           <div
             key={category}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10
+            className="bg-gray-900/90 backdrop-blur-sm rounded-xl p-6 border border-white/10
                      hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
           >
             <h3 className="text-xl font-semibold mb-6 text-white">{category}</h3>

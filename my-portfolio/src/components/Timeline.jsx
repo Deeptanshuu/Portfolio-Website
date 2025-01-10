@@ -38,7 +38,7 @@ export function Timeline() {
                 md:w-[45%] w-full pl-12 md:pl-0
                 ${index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'}
               `}>
-                <div className="group bg-black/25 rounded-lg p-4 hover:bg-white/15 transition-all duration-300">
+                <div className="group bg-gray-900/90 rounded-lg p-4 hover:bg-white/15 transition-all duration-300">
                   <div className={`flex items-center gap-4 mb-2 ${
                     index % 2 === 0 ? 'md:justify-end justify-between' : 'justify-between'
                   }`}>

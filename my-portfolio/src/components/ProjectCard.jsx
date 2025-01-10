@@ -54,8 +54,8 @@ export function ProjectCard({ project, index, isEven }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group relative border border-white/10 rounded-lg py-12 lg:py-16 first:pt-12 
-                 hover:border-white/20 transition-colors duration-300 px-4 lg:px-6
-                 backdrop-blur-sm bg-white/[0.02] cursor-pointer block"
+                 hover:border-white/20 hover:bg-stone-900/90 transition-colors duration-300 px-4 lg:px-6
+                 backdrop-blur-sm bg-gray-900/90 cursor-pointer block"
     >
       <div className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
         {/* Content */}

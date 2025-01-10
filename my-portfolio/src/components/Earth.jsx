@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
-import { useRef, Suspense, useMemo, memo } from 'react'
+import { useRef, Suspense, useMemo, memo, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TextureLoader } from 'three'
 import { Object3D } from 'three'
+import { useScroll } from '@react-three/drei'
 
 // Move static configurations outside without useMemo
 const ORBIT_CONFIG = [
@@ -29,29 +30,29 @@ const satelliteGeometry = new THREE.SphereGeometry(0.03, 8, 8)
 const earthGeometry = new THREE.SphereGeometry(2, 256, 256)
 
 // Optimize OrbitLine with shared geometry
-const OrbitLine = memo(({ radius }) => {
+const OrbitLine = memo(({ radius, strength }) => {
   const geometry = useMemo(() => (
-    new THREE.RingGeometry(radius - 0.005, radius + 0.005, 64) // Reduced segments
+    new THREE.RingGeometry(radius - 0.005, radius + 0.005, 64)
   ), [radius])
   
   const material = useMemo(() => {
     const mat = new THREE.MeshBasicMaterial({
       color: "#4fc1ff",
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.5 * strength,
       side: THREE.DoubleSide,
       depthWrite: false,
       depthTest: true
     });
     mat.sortParticles = true;
     return mat;
-  }, [])
+  }, [strength])
 
   return <mesh rotation-x={Math.PI / 2} geometry={geometry} material={material} />
 })
 
 // Replace Satellites component with regular meshes
-const Satellites = memo(({ orbitConfig }) => {
+const Satellites = memo(({ orbitConfig, strength }) => {
   const satellites = useMemo(() => {
     const items = [];
     for (let i = 0; i < orbitConfig.count; i++) {
@@ -66,13 +67,13 @@ const Satellites = memo(({ orbitConfig }) => {
   return (
     <group>
       {satellites.map((sat) => (
-        <Satellite key={sat.id} phase={sat.phase} config={orbitConfig} />
+        <Satellite key={sat.id} phase={sat.phase} config={orbitConfig} strength={strength} />
       ))}
     </group>
   );
 });
 
-const Satellite = memo(({ phase, config }) => {
+const Satellite = memo(({ phase, config, strength }) => {
   const meshRef = useRef();
   
   useFrame(({ clock }) => {
@@ -89,15 +90,15 @@ const Satellite = memo(({ phase, config }) => {
     <mesh ref={meshRef} geometry={satelliteGeometry}>
       <meshBasicMaterial
         color="#4fc1ff"
-        transparent={false}
-        opacity={1}
+        transparent={true}
+        opacity={strength}
       />
     </mesh>
   );
 });
 
 // Optimize Moon component
-const Moon = memo(() => {
+const Moon = memo(({ strength }) => {
   const moonRef = useRef()
   const moonGlowRef = useRef()
   
@@ -121,7 +122,7 @@ const Moon = memo(() => {
         <meshBasicMaterial
           color={MOON_CONFIG.color}
           transparent
-          opacity={0.6}
+          opacity={0.6 * strength}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -130,12 +131,9 @@ const Moon = memo(() => {
         <meshStandardMaterial
           color={MOON_CONFIG.color}
           transparent
-          opacity={0.8}
+          opacity={0.8 * strength}
           emissive={MOON_CONFIG.color}
-          emissiveIntensity={0.2}
-          onBeforeCompile={(shader) => {
-            shader.uniforms.sortParticles = { value: true };
-          }}
+          emissiveIntensity={0.2 * strength}
         />
       </mesh>
       
@@ -143,14 +141,10 @@ const Moon = memo(() => {
         <meshBasicMaterial
           color={MOON_CONFIG.color}
           transparent
-          opacity={0.1}
+          opacity={0.1 * strength}
           blending={THREE.AdditiveBlending}
           side={THREE.BackSide}
           depthWrite={false}
-          depthTest={true}
-          onBeforeCompile={(shader) => {
-            shader.uniforms.sortParticles = { value: true };
-          }}
         />
       </mesh>
     </group>
@@ -193,48 +187,6 @@ const createInstancedPoints = (geometry) => {
 };
 
 // Add these constants near the top with other configurations
-const MUMBAI_COORDINATES = {
-  latitude: 19.0760,
-  longitude: 72.8777
-}
-
-// Add this helper function to convert lat/long to 3D coordinates
-const latLongToVector3 = (lat, long, radius) => {
-  const phi = (90 - lat) * (Math.PI / 180)
-  const theta = (long + 180) * (Math.PI / 180)
-  
-  const x = -(radius * Math.sin(phi) * Math.cos(theta))
-  const z = (radius * Math.sin(phi) * Math.sin(theta))
-  const y = (radius * Math.cos(phi))
-  
-  return new THREE.Vector3(x, y, z)
-}
-
-// Add this new component for the location marker
-const LocationMarker = memo(({ position }) => {
-  const markerRef = useRef()
-  
-  useFrame(({ clock }) => {
-    if (markerRef.current) {
-      const time = clock.getElapsedTime()
-      markerRef.current.material.opacity = 0.7 + Math.sin(time * 2) * 0.3
-    }
-  })
-
-  return (
-    <mesh ref={markerRef} position={position}>
-      <sphereGeometry args={[0.04, 16, 16]} />
-      <meshBasicMaterial
-        color="#00ff88"
-        transparent
-        opacity={0.8}
-        blending={THREE.AdditiveBlending}
-      />
-    </mesh>
-  )
-})
-
-// Add these constants near the top with other configurations
 const ISS_CONFIG = {
   radius: 2.2,  // Slightly closer to Earth than other satellites
   speed: 0.15,  // Slowed down significantly (about one orbit per ~40 seconds)
@@ -244,7 +196,7 @@ const ISS_CONFIG = {
 }
 
 // Add this new component for the ISS
-const ISS = memo(() => {
+const ISS = memo(({ strength }) => {
   const issRef = useRef()
   const issGlowRef = useRef()
   
@@ -265,46 +217,35 @@ const ISS = memo(() => {
 
   return (
     <group>
-      {/* ISS Orbit Line */}
       <mesh rotation-x={ISS_CONFIG.inclination}>
         <ringGeometry args={[ISS_CONFIG.radius - 0.005, ISS_CONFIG.radius + 0.005, 128]} />
         <meshBasicMaterial
           color={ISS_CONFIG.color}
           transparent
-          opacity={0.3}
+          opacity={0.3 * strength}
           side={THREE.DoubleSide}
           depthWrite={false}
-          depthTest={true}
-          onBeforeCompile={(shader) => {
-            shader.uniforms.sortParticles = { value: true };
-          }}
         />
       </mesh>
       
-      {/* ISS Body */}
       <mesh ref={issRef}>
         <boxGeometry args={[ISS_CONFIG.size, ISS_CONFIG.size * 0.4, ISS_CONFIG.size * 0.4]} />
         <meshStandardMaterial
           color={ISS_CONFIG.color}
           emissive={ISS_CONFIG.color}
-          emissiveIntensity={0.5}
-          onBeforeCompile={(shader) => {
-            shader.uniforms.sortParticles = { value: true };
-          }}
+          emissiveIntensity={0.5 * strength}
+          transparent
+          opacity={strength}
         />
       </mesh>
       
-      {/* ISS Glow Effect */}
       <mesh ref={issGlowRef}>
         <sphereGeometry args={[ISS_CONFIG.size * 1.2, 16, 16]} />
         <meshBasicMaterial
           color={ISS_CONFIG.color}
           transparent
-          opacity={0.3}
+          opacity={0.3 * strength}
           blending={THREE.AdditiveBlending}
-          onBeforeCompile={(shader) => {
-            shader.uniforms.sortParticles = { value: true };
-          }}
         />
       </mesh>
     </group>
@@ -320,6 +261,8 @@ const EARTH_SPHERE = new THREE.Mesh(
 function EarthWithTextures() {
   const earthDotsRef = useRef();
   const autoRotate = useRef({ x: 0, y: 0 });
+  const scroll = useScroll();
+  const [scrollStrength, setScrollStrength] = useState(1);
 
   // Optimize texture loading with error handling
   const [normalMap, displacementMap, specularMap] = useMemo(() => {
@@ -342,6 +285,11 @@ function EarthWithTextures() {
       earthDotsRef.current.rotation.y = autoRotate.current.y;
       earthDotsRef.current.material.uniforms.uTime.value = time;
 
+      // Update strength based on scroll
+      const newScrollStrength = Math.max(1 - scroll.offset * 5, 0); // Goes from 1 to 0 in first 20% of scroll
+      setScrollStrength(newScrollStrength);
+      earthDotsRef.current.material.uniforms.uStrength.value = newScrollStrength;
+
       // Keep the mouse intersection for dot raising effect
       raycaster.setFromCamera(mouseCursor, camera);
       const intersects = raycaster.intersectObject(EARTH_SPHERE);
@@ -359,19 +307,20 @@ function EarthWithTextures() {
       transparent: true,
       uniforms: {
         uTime: { value: 0 },
-        uSize: { value: 15.0 }, // Increased size
+        uSize: { value: 15.0 },
         uDisplacementMap: { value: displacementMap },
         uDisplacementScale: { value: 0.55 },
-        uOceanColor: { value: new THREE.Color('#0066ff') }, // Brighter blue
-        uTerrainColor: { value: new THREE.Color('#00bdff') }, // Brighter cyan
+        uOceanColor: { value: new THREE.Color('#0066ff') },
+        uTerrainColor: { value: new THREE.Color('#00bdff') },
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
         uOutlineStrength: { value: 1.0 },
         uMousePosition: { value: new THREE.Vector3() },
         uHoverRadius: { value: 1.5 },
-        uHoverStrength: { value: 0.01 }, // Increased hover effect
+        uHoverStrength: { value: 0.01 },
         uNormalMap: { value: normalMap },
-        uNormalScale: { value: 5.0 } // Reduced for smoother look
+        uNormalScale: { value: 5.0 },
+        uStrength: { value: 1.0 }
       },
       vertexShader: `
         uniform float uTime;
@@ -381,6 +330,7 @@ function EarthWithTextures() {
         uniform vec3 uMousePosition;
         uniform float uHoverRadius;
         uniform float uHoverStrength;
+        uniform float uStrength;
         
         attribute vec3 instancePosition;
         attribute vec2 instanceUv;
@@ -405,8 +355,8 @@ function EarthWithTextures() {
           float distanceToMouse = distance(worldPosition.xyz, uMousePosition);
           float hoverEffect = smoothstep(uHoverRadius, 0.0, distanceToMouse);
           
-          // Add hover elevation to displacement
-          vec3 displaced = pos + normal * (elevation * uDisplacementScale + hoverEffect * uHoverStrength);
+          // Add hover elevation to displacement and apply strength
+          vec3 displaced = pos + normal * (elevation * uDisplacementScale + hoverEffect * uHoverStrength) * uStrength;
           
           vec4 modelPosition = modelMatrix * vec4(displaced, 1.0);
           vec4 viewPosition = viewMatrix * modelPosition;
@@ -429,6 +379,7 @@ function EarthWithTextures() {
         uniform float uTime;
         uniform sampler2D uNormalMap;
         uniform float uNormalScale;
+        uniform float uStrength;
         
         varying vec2 vUv;
         varying vec3 vNormal;
@@ -439,7 +390,7 @@ function EarthWithTextures() {
         void main() {
           float strength = distance(gl_PointCoord, vec2(0.5));
           strength = 1.0 - strength;
-          strength = pow(strength, 1.5); // Reduced power for broader dots
+          strength = pow(strength, 1.5);
           
           vec3 color;
           
@@ -455,29 +406,26 @@ function EarthWithTextures() {
             color = mix(uTerrainColor, uHighlightColor, t);
           }
           
-          // Add normal mapping effect
           vec3 normalMap = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
           vec3 normal = normalize(vNormal + normalMap * uNormalScale);
           
-          // Enhanced fresnel effect
           vec3 viewDir = normalize(vViewPosition);
-          float fresnel = pow(1.0 - abs(dot(normal, viewDir)), 1.5); // Reduced power for broader effect
-          color += fresnel * 0.5 * uHighlightColor; // Increased fresnel contribution
+          float fresnel = pow(1.0 - abs(dot(normal, viewDir)), 1.5);
+          color += fresnel * 0.5 * uHighlightColor;
           
-          // Increased base brightness
-          color *= 1.5;
+          // Apply strength to color brightness
+          color *= 1.5 * uStrength;
           
-          float alpha = strength * (1.0 + vElevation * 0.8); // Increased base opacity
+          float alpha = strength * (1.0 + vElevation * 0.8);
           
-          // Adjusted depth fade
-          float fadeStart = 8.0; // Increased fade start distance
-          float fadeEnd = 20.0; // Increased fade end distance
+          float fadeStart = 8.0;
+          float fadeEnd = 20.0;
           float fadeFactor = smoothstep(fadeEnd, fadeStart, vDepth);
           alpha *= fadeFactor;
           
-          if (strength < 0.02) discard; // Reduced discard threshold
+          if (strength < 0.02) discard;
           
-          gl_FragColor = vec4(color, alpha);
+          gl_FragColor = vec4(color, alpha * uStrength);
         }
       `,
       blending: THREE.AdditiveBlending,
@@ -490,30 +438,21 @@ function EarthWithTextures() {
   return (
     <group position={[0, 0, -8]} scale={1.65}>
       <primitive object={EARTH_SPHERE} renderOrder={0} />
-      <Moon renderOrder={2} />
-      <ISS renderOrder={2} />
+      <Moon renderOrder={2} strength={scrollStrength} />
+      <ISS renderOrder={2} strength={scrollStrength} />
       
       <ambientLight intensity={1} />
 
       {ORBIT_CONFIG.map((config, index) => (
         <group key={index} rotation-x={config.rotation} renderOrder={1}>
-          <OrbitLine radius={config.radius} />
-          <Satellites orbitConfig={config} />
+          <OrbitLine radius={config.radius} strength={scrollStrength} />
+          <Satellites orbitConfig={config} strength={scrollStrength} />
         </group>
       ))}
 
       <points ref={earthDotsRef} position={[0, 0, 0]} geometry={useMemo(() => createInstancedPoints(earthGeometry), [])} renderOrder={3}>
         <primitive object={dotsShaderMaterial} attach="material" />
       </points>
-      
-      <LocationMarker 
-        position={latLongToVector3(
-          MUMBAI_COORDINATES.latitude, 
-          MUMBAI_COORDINATES.longitude, 
-          2.3
-        )}
-        renderOrder={5}
-      />
     </group>
   );
 }
