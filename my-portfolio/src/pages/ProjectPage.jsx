@@ -91,7 +91,7 @@ const projects = [
     ],
     tags: ["React.js", "Tailwind", "MongoDB"],
     link: "https://tsukimarket.vercel.app/",
-    github: "https://github.com/Deeptanshuu/RAIT-INTERSHIP",
+    github: "https://github.com/Deeptanshuu/tsukimarket",
     longDescription: "Tsuki Market is a full-featured e-commerce platform that combines modern design with powerful functionality. It includes real-time inventory management, secure payment processing, and an intuitive shopping experience enhanced by custom animations.",
     features: [
       "Real-time inventory tracking",
