@@ -62,7 +62,7 @@ function HomePage() {
         frameloop="always"
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
-          <ScrollControls pages={11} damping={0.25} maxSpeed={0.8}>
+          <ScrollControls pages={12} damping={0.25} maxSpeed={0.8}>
             <Hero isMobile={isMobile} />
             <Scroll html>
               <Interface />
