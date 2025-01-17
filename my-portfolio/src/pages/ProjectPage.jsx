@@ -237,8 +237,42 @@ export function ProjectPage() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isWebsiteUp, setIsWebsiteUp] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   
   const project = projects.find(p => p.id === id)
+  
+  useEffect(() => {
+    const checkWebsiteStatus = async () => {
+      if (project?.link) {
+        setIsLoading(true);
+        try {
+          // Create an AbortController to timeout the request after 5 seconds
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+          const response = await fetch(project.link, {
+            method: 'HEAD', // Only fetch headers, not the full response
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          setIsWebsiteUp(response.ok);
+        } catch (error) {
+          // Handle network errors, timeouts, and CORS issues
+          setIsWebsiteUp(false);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    checkWebsiteStatus();
+    // Set up an interval to check every 30 seconds
+    const interval = setInterval(checkWebsiteStatus, 30000);
+    
+    return () => clearInterval(interval);
+  }, [project]);
   
   const handleImageClick = (image) => {
     const index = project.images.findIndex(img => img === image)
@@ -478,8 +512,11 @@ export function ProjectPage() {
                 className="w-full sm:w-auto px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
               >
                 <FiExternalLink className="w-5 h-5" />
-                  View Live Project
-                  <span className='bg-green-500 rounded-full px-1 py-1'></span>
+                View Live Project
+                <span className={`rounded-full w-2 h-2 ${
+                  isLoading ? 'bg-yellow-500 animate-pulse' : 
+                  isWebsiteUp ? 'bg-green-500' : 'bg-red-500'
+                }`}></span>
               </a>
             )}
           </div>
