@@ -3,7 +3,7 @@ import { useRef } from 'react'
 const timelineData = [
   {
     year: "2024",
-    title: "Google Developer Student Club Lead",
+    title: "Google Developer Group WebDev",
     company: "RAIT, DY Patil University"
   },
   {

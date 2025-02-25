@@ -1,35 +1,38 @@
-const skills = {
+import { motion } from 'framer-motion';
+import { 
+  SiReact, SiChakraui, SiTypescript, SiTailwindcss, SiThreedotjs, SiFramer,
+  SiNodedotjs, SiExpress, SiPython, SiFlask, SiMongodb, SiPostgresql,
+  SiTensorflow, SiPytorch, SiScikitlearn, SiGit, SiDocker, SiVercel
+} from 'react-icons/si';
+
+const skillsWithIcons = {
   "Frontend Development": [
-    { name: "React.js", level: 90 },
-    { name: "Chakra UI", level: 85 },
-    { name: "TypeScript", level: 80 },
-    { name: "Tailwind CSS", level: 95 },
-    { name: "Three.js", level: 75 },
-    { name: "Framer Motion", level: 85 }
+    { name: "React.js", icon: SiReact, color: "#61DAFB" },
+    { name: "Chakra UI", icon: SiChakraui, color: "#319795" },
+    { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+    { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
+    { name: "Three.js", icon: SiThreedotjs, color: "#000000" },
+    { name: "Framer Motion", icon: SiFramer, color: "#0055FF" }
   ],
   "Backend Development": [
-    { name: "Node.js", level: 85 },
-    { name: "Express", level: 80 },
-    { name: "Python", level: 85 },
-    { name: "Flask", level: 75 },
-    { name: "MongoDB", level: 85 },
-    { name: "PostgreSQL", level: 70 }
+    { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
+    { name: "Express", icon: SiExpress, color: "#000000" },
+    { name: "Python", icon: SiPython, color: "#3776AB" },
+    { name: "Flask", icon: SiFlask, color: "#000000" },
+    { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
+    { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" }
   ],
   "Machine Learning": [
-    { name: "TensorFlow", level: 75 },
-    { name: "PyTorch", level: 70 },
-    { name: "scikit-learn", level: 80 },
-    { name: "BERT", level: 75 },
-    { name: "spaCy", level: 70 }
+    { name: "TensorFlow", icon: SiTensorflow, color: "#FF6F00" },
+    { name: "PyTorch", icon: SiPytorch, color: "#EE4C2C" },
+    { name: "scikit-learn", icon: SiScikitlearn, color: "#F7931E" }
   ],
   "Tools & Others": [
-    { name: "Git/GitHub", level: 90 },
-    { name: "Docker", level: 75 },
-    { name: "AWS", level: 70 },
-    { name: "Vercel", level: 85 },
-    { name: "DevOps", level: 80 }
+    { name: "Git/GitHub", icon: SiGit, color: "#F05032" },
+    { name: "Docker", icon: SiDocker, color: "#2496ED" },
+    { name: "Vercel", icon: SiVercel, color: "#000000" }
   ]
-}
+};
 
 export function SkillsCloud() {
   return (
@@ -37,34 +40,35 @@ export function SkillsCloud() {
       <div className="text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Technical Skills</h2>
         <p className="text-white/60 max-w-2xl mx-auto">
-          A comprehensive overview of my technical expertise and proficiency levels across different domains.
+          An overview of my technical expertise across different domains.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {Object.entries(skills).map(([category, skillsList], categoryIndex) => (
+        {Object.entries(skillsWithIcons).map(([category, skillsList], categoryIndex) => (
           <div
             key={category}
             className="bg-gray-900/90 backdrop-blur-sm rounded-xl p-6 border border-white/10
-                     hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
+                     hover:bg-white/10 transition-all duration-300"
           >
             <h3 className="text-xl font-semibold mb-6 text-white">{category}</h3>
-            <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
               {skillsList.map((skill, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between text-sm text-white">
-                    <span>{skill.name}</span>
-                    <span className="text-white/60">{skill.level}%</span>
-                  </div>
-                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1000"
-                      style={{
-                        width: `${skill.level}%`
-                      }}
-                    />
-                  </div>
-                </div>
+                <motion.div
+                  key={index}
+                  className="flex flex-col items-center justify-center p-4 rounded-lg bg-white/5
+                           hover:bg-white/10 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <skill.icon 
+                    className="w-10 h-10 mb-2" 
+                    style={{ color: skill.color }}
+                  />
+                  <span className="text-sm text-center text-white/80">{skill.name}</span>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -74,15 +78,19 @@ export function SkillsCloud() {
       {/* Floating Badges */}
       <div className="mt-16 flex flex-wrap justify-center gap-4">
         {["AWS Certified", "Google Cloud", "React Expert", "ML Engineer"].map((badge, index) => (
-          <div
+          <motion.div
             key={index}
             className="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-white/10
-                     hover:bg-white/10 transition-all duration-300 transform hover:scale-110 text-white"
+                     hover:bg-white/10 transition-all duration-300 text-white"
+            whileHover={{ scale: 1.1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
           >
             {badge}
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
-  )
+  );
 }
