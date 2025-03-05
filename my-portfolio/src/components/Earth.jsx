@@ -4,15 +4,14 @@ import { useRef, Suspense, useMemo, memo, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TextureLoader } from 'three'
-import { Object3D } from 'three'
 import { useScroll } from '@react-three/drei'
 
 // Move static configurations outside without useMemo
 const ORBIT_CONFIG = [
-  { radius: 2.3, speed: 1.2, count: 3, rotation: Math.PI * 0.1 },
-  { radius: 2.5, speed: 0.8, count: 4, rotation: -Math.PI * 0.15 },
-  { radius: 2.5, speed: 0.5, count: 4, rotation: Math.PI * 0.2 },
-  { radius: 2.4, speed: 1.0, count: 3, rotation: -Math.PI * 0.25 }
+  // { radius: 2.3, speed: 1.2, count: 3, rotation: Math.PI * 0.1 },
+  // { radius: 2.5, speed: 0.8, count: 4, rotation: -Math.PI * 0.15 },
+  // { radius: 2.5, speed: 0.5, count: 4, rotation: Math.PI * 0.2 },
+  // { radius: 2.4, speed: 1.0, count: 3, rotation: -Math.PI * 0.25 }
 ]
 
 const MOON_CONFIG = {
@@ -188,9 +187,9 @@ const createInstancedPoints = (geometry) => {
 
 // Add these constants near the top with other configurations
 const ISS_CONFIG = {
-  radius: 2.2,  // Slightly closer to Earth than other satellites
+  radius: 2.5,  // Slightly closer to Earth than other satellites
   speed: 0.15,  // Slowed down significantly (about one orbit per ~40 seconds)
-  size: 0.06,   // Slightly larger than regular satellites
+  size: 0.09,   // Slightly larger than regular satellites
   inclination: Math.PI * 0.23, // ~51.6 degrees orbital inclination
   color: '#00ff88'
 }
