@@ -288,16 +288,8 @@ function EarthWithTextures() {
       const newScrollStrength = Math.max(1 - scroll.offset * 5, 0); // Goes from 1 to 0 in first 20% of scroll
       setScrollStrength(newScrollStrength);
       earthDotsRef.current.material.uniforms.uStrength.value = newScrollStrength;
-
-      // Keep the mouse intersection for dot raising effect
-      raycaster.setFromCamera(mouseCursor, camera);
-      const intersects = raycaster.intersectObject(EARTH_SPHERE);
       
-      if (intersects.length > 0) {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.copy(intersects[0].point);
-      } else {
-        earthDotsRef.current.material.uniforms.uMousePosition.value.set(1000, 1000, 1000);
-      }
+      // Remove hover intersection calculation since hover is disabled
     }
   });
 
@@ -305,7 +297,7 @@ function EarthWithTextures() {
     const material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
-        uTime: { value: 0 },
+        uTime: { value: 1 },
         uSize: { value: 15.0 },
         uDisplacementMap: { value: displacementMap },
         uDisplacementScale: { value: 0.55 },
@@ -314,9 +306,9 @@ function EarthWithTextures() {
         uHighlightColor: { value: new THREE.Color('#ffffff') },
         uOutlineColor: { value: new THREE.Color('#ffffff') },
         uOutlineStrength: { value: 1.0 },
-        uMousePosition: { value: new THREE.Vector3() },
-        uHoverRadius: { value: 1.5 },
-        uHoverStrength: { value: 0.01 },
+        uMousePosition: { value: new THREE.Vector3(1000, 1000, 1000) }, // Move mouse far away
+        uHoverRadius: { value: 0.0 },
+        uHoverStrength: { value: 0.0 },
         uNormalMap: { value: normalMap },
         uNormalScale: { value: 5.0 },
         uStrength: { value: 1.0 }
