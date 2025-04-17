@@ -17,7 +17,7 @@ const socialLinks = [
   { label: 'LinkedIn', url: 'https://www.linkedin.com/in/deeptanshu-l-6868a4187' },
 ]
 
-export function Navigation() {
+export function Navigation({ onMenuToggle }) {
   const [activeSection, setActiveSection] = useState('home')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const scroll = useScroll()
@@ -42,7 +42,14 @@ export function Navigation() {
     return () => scroll.el.removeEventListener('scroll', handleScroll)
   }, [scroll])
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => {
+    const newMenuState = !isMenuOpen
+    setIsMenuOpen(newMenuState)
+    // Call the callback to inform parent components
+    if (onMenuToggle) {
+      onMenuToggle(newMenuState)
+    }
+  }
 
   const scrollToSection = (offset) => {
     scroll.el.scrollTo({
@@ -50,6 +57,10 @@ export function Navigation() {
       behavior: 'smooth'
     })
     setIsMenuOpen(false)
+    // Inform parent components that menu is closed
+    if (onMenuToggle) {
+      onMenuToggle(false)
+    }
   }
 
   return (
@@ -83,4 +94,4 @@ export function Navigation() {
       </div>
     </>
   )
-} 
+}

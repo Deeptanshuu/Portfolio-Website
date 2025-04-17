@@ -10,6 +10,7 @@ import { ProjectPage } from './pages/ProjectPage'
 
 function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
     // Check if device is mobile
@@ -62,10 +63,15 @@ function HomePage() {
         frameloop="always"
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
-          <ScrollControls pages={isMobile ? 12 : 8.5} damping={isMobile ? 0.05 : 0.2} maxSpeed={0.8}>
+          <ScrollControls 
+            pages={isMobile ? 12 : 8.5} 
+            damping={isMobile ? 0.05 : 0.2} 
+            maxSpeed={0.8}
+            enabled={!isMenuOpen} // Disable scrolling when menu is open
+          >
             <Hero isMobile={isMobile} />
-            <Scroll html>
-              <Interface />
+            <Scroll html enabled={!isMenuOpen}> {/* Also disable HTML scrolling */}
+              <Interface onMenuToggle={setIsMenuOpen} />
             </Scroll>
           </ScrollControls>
         </Suspense>
