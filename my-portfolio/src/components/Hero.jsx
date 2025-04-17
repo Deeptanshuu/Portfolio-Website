@@ -63,7 +63,7 @@ export function Hero({ isMobile }) {
 
   return (
     <group ref={groupRef}>
-      {!isMobile && (
+      {/* {!isMobile && (
         <Html fullscreen style={{ pointerEvents: 'none', zIndex: 1 }}>
           <div style={{ position: 'absolute', bottom: '40px', left: '20px', pointerEvents: 'auto' }}>
             <button
@@ -101,7 +101,7 @@ export function Hero({ isMobile }) {
             </button>
           </div>
         </Html>
-      )}
+      )} */}
 
       <points ref={starsRef} renderOrder={-1} position={[0, 0, -10]}>
         <bufferGeometry>

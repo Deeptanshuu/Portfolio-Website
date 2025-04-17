@@ -81,7 +81,7 @@ const projects = [
   {
     id: "tsuki-market",
     title: "Tsuki Market : E-Commerce Platform",
-    description: "A modern e-commerce platform built with Next.js and Tailwind CSS. Features include real-time payment management, seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
+    description: "A modern e-commerce platform built with React.js and Tailwind CSS. Features include real-time payment management, seamless checkout process, and stunning product visualizations enhanced by Custom css animations.",
     images: [
       "/projects/e-com/e-com.jpg",
       "/projects/e-com/2.jpg",
@@ -101,7 +101,7 @@ const projects = [
       "Admin dashboard"
     ],
     techStack: {
-      frontend: ["Next.js", "Tailwind CSS", "Framer Motion"],
+      frontend: ["React.js", "Tailwind CSS", "Framer Motion"],
       backend: ["Node.js", "Express", "MongoDB"],
       payment: ["Stripe", "PayPal"],
       hosting: ["Vercel", "MongoDB Atlas"]
