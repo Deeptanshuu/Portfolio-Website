@@ -71,7 +71,7 @@ function HomePage() {
           >
             <Hero isMobile={isMobile} />
             <Scroll html enabled={!isMenuOpen}> {/* Also disable HTML scrolling */}
-              <Interface onMenuToggle={setIsMenuOpen} />
+              <Interface isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
             </Scroll>
           </ScrollControls>
         </Suspense>

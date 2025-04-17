@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Navigation } from '../navigation/Navigation'
 import { Hero } from './Hero'
 import { Projects } from './Projects'
@@ -7,20 +6,10 @@ import { Timeline } from '../Timeline'
 import { Contact } from './Contact'
 import { Divider } from './Divider'
 
-export function Interface({ onMenuToggle }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  
-  // Handle menu state changes
-  const handleMenuToggle = (menuState) => {
-    setIsMenuOpen(menuState)
-    if (onMenuToggle) {
-      onMenuToggle(menuState)
-    }
-  }
-
+export function Interface({ isMenuOpen, setIsMenuOpen }) {
   return (
     <div className="w-screen">
-      <Navigation onMenuToggle={handleMenuToggle} />
+      <Navigation isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
       <Hero />
       <Divider />
       <Projects className="mt-28"/>
