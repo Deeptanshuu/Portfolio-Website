@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // Regular HTML cursor component
-export function CustomCursor() {
+export function CustomCursor({ transition = 'transform 0.1s ease-out', size = 110 }) {
   const [position, setPosition] = useState({ x: -100, y: -100 })
   const [isHovered, setIsHovered] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -40,31 +40,42 @@ export function CustomCursor() {
 
   if (isMobile) return null
 
+  const strokeColor = isHovered ? "#ff3e3e" : "white"
+  const rotation = isHovered ? 'rotate(45deg)' : 'rotate(0deg)'
+
   return (
     <div 
       className="cursor-container"
       style={{
-        transform: `translate(${position.x}px, ${position.y}px)`
+        transform: `translate(${position.x - size/2}px, ${position.y - size/2}px)`,
+        position: 'fixed',
+        pointerEvents: 'none',
+        zIndex: 9999,
+        transition: transition,
       }}
     >
       <svg 
         className="cursor-circle" 
-        width="70" 
-        height="70" 
+        width={size} 
+        height={size} 
         viewBox="0 0 70 70"
+        style={{
+          transform: rotation,
+          transition: 'transform 0.2s ease-out',
+        }}
       >
         {/* Crosshair */}
         <line 
           x1="35" y1="25" x2="35" y2="45" 
-          stroke={isHovered ? "#ff3e3e" : "white"} 
+          stroke={strokeColor}
           strokeWidth="1"
         />
         <line 
           x1="25" y1="35" x2="45" y2="35" 
-          stroke={isHovered ? "#ff3e3e" : "white"} 
+          stroke={strokeColor} 
           strokeWidth="1"
         />
       </svg>
     </div>
   )
-} 
+}

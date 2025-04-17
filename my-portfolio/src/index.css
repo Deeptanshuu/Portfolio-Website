@@ -47,16 +47,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Hide scrollbar but keep functionality */
-::-webkit-scrollbar {
-  display: none;
+/* Hide scrollbar for Firefox */
+* {
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
-
-/* Custom cursor */
-@media (min-width: 768px) {
-  /* * {
-    cursor: none;
-  } */
+* {
+  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
 
 .cursor-container {
@@ -68,59 +68,8 @@ body {
   will-change: transform;
 }
 
-.magnifying-glass {
-  mix-blend-mode: difference;
-  transition: all 0.3s ease-out;
-}
-
-.cursor-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-  z-index: 1000;
-}
-
-.cursor-ring::before,
-.cursor-ring::after {
-  content: '';
-  position: absolute;
-  background-color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s ease-out, background-color 0.3s ease-out;
-}
-
-.cursor-ring::before {
-  width: 1px;
-  height: 16px;
-}
-
-.cursor-ring::after {
-  width: 16px;
-  height: 1px;
-}
-
-.cursor-ring.hovered::before,
-.cursor-ring.hovered::after {
-  transform: translate(-50%, -50%) rotate(45deg);
-  background-color: #ff3e3e;
-}
-
-/* Add this to ensure the magnifying effect works properly */
-@supports (backdrop-filter: blur(1px)) {
-  .magnifying-glass {
-    backdrop-filter: contrast(1.2) brightness(1.2) blur(1px);
-  }
-}
-
 .cursor-circle {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   pointer-events: none;
   transition: transform 0.2s ease-out;
 }
@@ -215,32 +164,4 @@ button:hover {
 ::selection {
   background-color: #ffffff81; 
   color: black; 
-}
-
-/* Add these rules to your existing index.css */
-.text-container {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
-
-/* Ensure proper text rendering */
-p, h1, h2, h3, h4, h5, h6 {
-  max-width: 100%;
-  word-break: normal;
-}
-
-/* Optional: Add hover effect for the dots */
-.cursor-container:has(.cursor-ring.hovered) .cursor-circle circle {
-  fill: #ff3e3e;
-}
-
-/* Update cursor styles */
-.cursor-fluid {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  mix-blend-mode: screen;
 }

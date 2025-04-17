@@ -382,7 +382,7 @@ export function ProjectPage() {
           {/* Close button */}
           <button 
             onClick={closeModal}
-            className="absolute z-50 top-4 right-4 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+            className="absolute z-50 top-4 right-4 text-white/80 hover:text-white p-2 rounded-full border-2 border-white/10 bg-black/50 hover:bg-white/20 transition-colors"
           >
             <FiX className="w-6 h-6" />
           </button>
@@ -390,20 +390,20 @@ export function ProjectPage() {
           {/* Navigation buttons */}
           <button
             onClick={handlePrevImage}
-            className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-gray-500/80 hover:text-gray-500 p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+            className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-gray-800 p-2 rounded-full border-2 border-white/20 bg-black/50 hover:bg-white/60 transition-colors"
           >
             <FiChevronLeft className="w-8 h-8" />
           </button>
 
           <button
             onClick={handleNextImage}
-            className="absolute z-50 right-4 top-1/2 -translate-y-1/2 text-gray-500/80 hover:text-gray-500 p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors"
+            className="absolute z-50 right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-gray-800 p-2 rounded-full border-2 border-white/20 bg-black/50 hover:bg-white/60 transition-colors"
           >
             <FiChevronRight className="w-8 h-8" />
           </button>
 
           {/* Image counter */}
-          <div className="absolute z-50 top-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white/90">
+          <div className="absolute z-50 top-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm px-5 py-1.5 rounded-full text-m text-white/90">
             {currentImageIndex + 1} / {project.images.length}
           </div>
 
@@ -411,19 +411,19 @@ export function ProjectPage() {
           <div className="absolute z-50 bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
             <button
               onClick={(e) => { e.stopPropagation(); handleZoomOut(); }}
-              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+              className="p-2 rounded-full border-2 border-white/10 bg-black/50 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
             >
               <FiZoomOut className="w-6 h-6" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); handleReset(); }}
-              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+              className="p-2 rounded-full border-2 border-white/10 bg-black/50 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
             >
               <FiMaximize2 className="w-6 h-6" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); handleZoomIn(); }}
-              className="p-2 rounded-full border-2 border-white/10 bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
+              className="p-2 rounded-full border-2 border-white/10 bg-black/50 hover:bg-white/20 transition-colors text-white/80 hover:text-white"
             >
               <FiZoomIn className="w-6 h-6" />
             </button>
@@ -567,86 +567,40 @@ export function ProjectPage() {
 
             {/* Gallery */}
             <section className="relative">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Project Gallery</h2>
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                {/* Main large image */}
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 flex items-center gap-3">
+                Project Gallery
+                <span className="bg-white/10 px-3 py-1 rounded-full text-sm text-white/80">
+                  {project.images.length} images
+                </span>
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Featured large image */}
                 <div 
-                  className="md:col-span-8 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
+                  className="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group cursor-pointer"
                   onClick={() => handleImageClick(project.images[0])}
                 >
                   <img 
                     src={project.images[0]}
                     alt={`${project.title} main screenshot`}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover aspect-[16/10]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-6">Click to view fullscreen</p>
-                  </div>
                 </div>
-
-                {/* Side column */}
-                <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-4">
-                  <div 
-                    className="relative aspect-video md:aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
-                    onClick={() => handleImageClick(project.images[1])}
+                
+                {/* Secondary images in a grid */}
+                {project.images.slice(1).map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group cursor-pointer"
+                    onClick={() => handleImageClick(image)}
                   >
-                    <img 
-                      src={project.images[1]}
-                      alt={`${project.title} feature screenshot`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    <img
+                      src={image}
+                      alt={`${project.title} screenshot ${index + 2}`}
+                      className="w-full h-full object-cover aspect-square md:aspect-[4/3]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                      <p className="text-white p-4">Click to view fullscreen</p>
-                    </div>
                   </div>
-                  <div 
-                    className="relative aspect-video md:aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
-                    onClick={() => handleImageClick(project.images[2])}
-                  >
-                    <img 
-                      src={project.images[2]}
-                      alt={`${project.title} detail screenshot`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                      <p className="text-white p-4">Click to view fullscreen</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom row */}
-                <div 
-                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
-                  onClick={() => handleImageClick(project.images[3])}
-                >
-                  <img 
-                    src={project.images[3]}
-                    alt={`${project.title} mobile screenshot`}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-4">Click to view fullscreen</p>
-                  </div>
-                </div>
-
-                <div 
-                  className="md:col-span-6 relative aspect-video rounded-xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
-                  onClick={() => handleImageClick(project.images[4])}
-                >
-                  <img 
-                    src={project.images[4]}
-                    alt={`${project.title} feature screenshot`}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <p className="text-white p-4">Click to view fullscreen</p>
-                  </div>
-                </div>
-
-                {/* Image count indicator */}
-                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white/90">
-                  {project.images.length} images
-                </div>
+                ))}
               </div>
             </section>
           </div>
@@ -709,4 +663,4 @@ export function ProjectPage() {
       </div>
     </div>
   )
-} 
+}

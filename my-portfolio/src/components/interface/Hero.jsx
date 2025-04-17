@@ -62,9 +62,9 @@ export function Hero() {
 function RolesList() {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center 
-      gap-1 sm:gap-2 md:gap-6 mt-2 sm:mt-3 md:mt-6 
-      text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl 
-      overflow-visible">
+      gap-0.5 sm:gap-1 md:gap-3 mt-1 sm:mt-2 md:mt-3 
+      text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl 
+      overflow-visible w-[20%]">
       <AnimatedText delay={0.4}>
         <span className="font-normal text-white">Developer</span>
       </AnimatedText>

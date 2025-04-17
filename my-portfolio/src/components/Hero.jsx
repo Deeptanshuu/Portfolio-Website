@@ -49,7 +49,7 @@ export function Hero({ isMobile }) {
     }
 
     // Update group position based on scroll with optimized calculations
-    if (groupRef.current && !isMobile) {
+    if (groupRef.current) {
       const scrollOffset = scroll.offset
       if (scrollOffset < 0.15) {
         // Use smoother easing for scroll movement
@@ -132,7 +132,8 @@ export function Hero({ isMobile }) {
       </points>
 
       <group position={[0, 0, 0]} renderOrder={1}>
-        {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)}
+        {/* {isMobile ? <EarthMobile /> : (useRealEarth ? <EarthMobile /> : <Earth />)} */}
+        {(useRealEarth ? <EarthMobile /> : <Earth />)}
       </group>
     </group>
   )

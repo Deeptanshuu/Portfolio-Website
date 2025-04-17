@@ -11,21 +11,21 @@ import { ProjectPage } from './pages/ProjectPage'
 function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
 
-  // useEffect(() => {
-  //   // Check if device is mobile
-  //   const checkMobile = () => {
-  //     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  //     const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i;
-  //     setIsMobile(mobileRegex.test(userAgent.toLowerCase()));
-  //   };
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i;
+      setIsMobile(mobileRegex.test(userAgent.toLowerCase()));
+    };
 
-  //   // Initial check
-  //   checkMobile();
+    // Initial check
+    checkMobile();
 
-  //   // Add resize listener
-  //   window.addEventListener('resize', checkMobile);
-  //   return () => window.removeEventListener('resize', checkMobile);
-  // }, []);
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div className="h-screen bg-black">
@@ -62,7 +62,7 @@ function HomePage() {
         frameloop="always"
       >
         <Suspense fallback={<div className="loading-spinner"><h1>Loading...</h1></div>}>
-          <ScrollControls pages={11.5} damping={0.25} maxSpeed={0.8}>
+          <ScrollControls pages={isMobile ? 12 : 8.5} damping={isMobile ? 0.05 : 0.2} maxSpeed={0.8}>
             <Hero isMobile={isMobile} />
             <Scroll html>
               <Interface />

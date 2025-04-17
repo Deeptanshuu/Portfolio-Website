@@ -7,30 +7,39 @@ export function AnimatedText({ children, className = '', delay = 0 }) {
   const textRef = useRef(null)
 
   useEffect(() => {
-    // Split text into characters
-    const text = new SplitType(textRef.current, { types: 'chars' })
-    const chars = text.chars
+    // Skip animation on mobile devices for better performance
+    if (window.innerWidth < 1024) {
+      return;
+    }
+    
+    // Split text into words instead of characters for better text flow
+    const text = new SplitType(textRef.current, { 
+      types: 'words',
+      tagName: 'span'
+    })
+    
+    const words = text.words
 
     // Initial state
-    gsap.set(chars, {
-      y: 100,
+    gsap.set(words, {
+      y: 30, // Reduced movement for subtler effect
       opacity: 0
     })
 
     // Animation
-    gsap.to(chars, {
+    gsap.to(words, {
       y: 0,
       opacity: 1,
-      stagger: 0.02,
-      duration: 0.3,
-      ease: 'power4.out',
+      stagger: 0.03, // Slightly increased for word-by-word animation
+      duration: 0.5,
+      ease: 'power3.out',
       delay: delay
     })
   }, [delay])
 
   return (
-    <span ref={textRef} className={className}>
+    <span ref={textRef} className={className} style={{ display: 'inline-block', width: '100%' }}>
       {children}
     </span>
   )
-} 
+}

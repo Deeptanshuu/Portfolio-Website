@@ -73,9 +73,9 @@ export function Contact() {
               href="/resume.pdf"
               download
               className="group flex items-center gap-2 px-7 py-3 rounded-full
-                bg-white/5 hover:bg-white/10
-                border border-white/10 hover:border-white/20
-                text-white/60 hover:text-white
+                bg-white/10 hover:bg-white/30
+                border border-white/30 hover:border-white/20
+                text-white hover:text-white
                 transition-all duration-300"
             >
               <span>Download Resume</span>

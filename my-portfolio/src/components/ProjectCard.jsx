@@ -67,8 +67,8 @@ export function ProjectCard({ project, index, isEven }) {
               </span>
             </div>
             
-            <div className="overflow-hidden">
-              <AnimatedText delay={0.2} className="text-white/70 text-lg leading-relaxed font-light whitespace-normal">
+            <div className="overflow-hidden whitespace-normal break-normal">
+              <AnimatedText delay={0.1} className="text-white/70 text-lg break-normal font-light">
                 {project.description}<br/>
               </AnimatedText>
             </div>

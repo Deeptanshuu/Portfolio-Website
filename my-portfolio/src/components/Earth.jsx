@@ -21,6 +21,15 @@ const MOON_CONFIG = {
   color: '#ffffff'
 }
 
+// Add these constants near the top with other configurations
+const ISS_CONFIG = {
+  radius: 2.5,  // Slightly closer to Earth than other satellites
+  speed: 0.15,  // Slowed down significantly (about one orbit per ~40 seconds)
+  size: 0.09,   // Slightly larger than regular satellites
+  inclination: Math.PI * 0.23, // ~51.6 degrees orbital inclination
+  color: '#00ff88'
+}
+
 // Create static geometries
 const moonGeometry = new THREE.SphereGeometry(MOON_CONFIG.size, 32, 32)
 const moonGlowGeometry = new THREE.SphereGeometry(MOON_CONFIG.size * 1.2, 32, 32)
@@ -150,6 +159,69 @@ const Moon = memo(({ strength }) => {
   )
 })
 
+const ISS = memo(({ strength }) => {
+  const issRef = useRef()
+  const issGlowRef = useRef()
+  const orbitRef = useRef()
+  
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime() * ISS_CONFIG.speed
+    
+    // Calculate position with proper orbital inclination
+    const x = Math.cos(t) * ISS_CONFIG.radius
+    const z = Math.sin(t) * ISS_CONFIG.radius
+    
+    // Apply inclination rotation to the position
+    const y = Math.sin(t) * Math.sin(ISS_CONFIG.inclination) * ISS_CONFIG.radius
+    
+    issRef.current.position.set(x, y, z)
+    issGlowRef.current.position.set(x, y, z)
+    
+    // Rotate ISS to face its direction of travel plus a slight pitch based on inclination
+    issRef.current.rotation.y = t
+    issRef.current.rotation.x = Math.sin(t) * ISS_CONFIG.inclination * 0.5
+  })
+
+  return (
+    <group>
+      {/* Orbital path ring - rotated correctly to match ISS path */}
+      <mesh ref={orbitRef} rotation-x={ISS_CONFIG.inclination}>
+        <ringGeometry args={[ISS_CONFIG.radius - 0.005, ISS_CONFIG.radius + 0.005, 128]} />
+        <meshBasicMaterial
+          color={ISS_CONFIG.color}
+          transparent
+          opacity={0.3 * strength}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+      
+      {/* ISS model */}
+      <mesh ref={issRef}>
+        <boxGeometry args={[ISS_CONFIG.size, ISS_CONFIG.size * 0.4, ISS_CONFIG.size * 0.4]} />
+        <meshStandardMaterial
+          color={ISS_CONFIG.color}
+          emissive={ISS_CONFIG.color}
+          emissiveIntensity={0.5 * strength}
+          transparent
+          opacity={strength}
+        />
+      </mesh>
+      
+      {/* ISS glow effect */}
+      <mesh ref={issGlowRef}>
+        <sphereGeometry args={[ISS_CONFIG.size * 1.2, 16, 16]} />
+        <meshBasicMaterial
+          color={ISS_CONFIG.color}
+          transparent
+          opacity={0.3 * strength}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+    </group>
+  )
+})
+
 const createInstancedPoints = (geometry) => {
   const positions = geometry.attributes.position.array;
   const uvs = geometry.attributes.uv.array;
@@ -184,72 +256,6 @@ const createInstancedPoints = (geometry) => {
   
   return instancedGeometry;
 };
-
-// Add these constants near the top with other configurations
-const ISS_CONFIG = {
-  radius: 2.5,  // Slightly closer to Earth than other satellites
-  speed: 0.15,  // Slowed down significantly (about one orbit per ~40 seconds)
-  size: 0.09,   // Slightly larger than regular satellites
-  inclination: Math.PI * 0.23, // ~51.6 degrees orbital inclination
-  color: '#00ff88'
-}
-
-// Add this new component for the ISS
-const ISS = memo(({ strength }) => {
-  const issRef = useRef()
-  const issGlowRef = useRef()
-  
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() * ISS_CONFIG.speed
-    
-    // Calculate position with orbital inclination
-    const x = Math.cos(t) * ISS_CONFIG.radius
-    const z = Math.sin(t) * ISS_CONFIG.radius
-    const y = Math.sin(t) * Math.sin(ISS_CONFIG.inclination) * ISS_CONFIG.radius * 0.8
-    
-    issRef.current.position.set(x, y, z)
-    issGlowRef.current.position.set(x, y, z)
-    
-    // Rotate ISS to face its direction of travel
-    issRef.current.rotation.y = t
-  })
-
-  return (
-    <group>
-      <mesh rotation-x={ISS_CONFIG.inclination}>
-        <ringGeometry args={[ISS_CONFIG.radius - 0.005, ISS_CONFIG.radius + 0.005, 128]} />
-        <meshBasicMaterial
-          color={ISS_CONFIG.color}
-          transparent
-          opacity={0.3 * strength}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
-      </mesh>
-      
-      <mesh ref={issRef}>
-        <boxGeometry args={[ISS_CONFIG.size, ISS_CONFIG.size * 0.4, ISS_CONFIG.size * 0.4]} />
-        <meshStandardMaterial
-          color={ISS_CONFIG.color}
-          emissive={ISS_CONFIG.color}
-          emissiveIntensity={0.5 * strength}
-          transparent
-          opacity={strength}
-        />
-      </mesh>
-      
-      <mesh ref={issGlowRef}>
-        <sphereGeometry args={[ISS_CONFIG.size * 1.2, 16, 16]} />
-        <meshBasicMaterial
-          color={ISS_CONFIG.color}
-          transparent
-          opacity={0.3 * strength}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-    </group>
-  )
-})
 
 // Add this near the top with other constants
 const EARTH_SPHERE = new THREE.Mesh(
@@ -455,4 +461,4 @@ export const Earth = memo(() => {
       <EarthWithTextures />
     </Suspense>
   )
-}) 
+})
