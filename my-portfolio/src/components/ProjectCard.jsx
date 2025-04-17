@@ -88,8 +88,8 @@ export function ProjectCard({ project, index, isEven }) {
             ))}
           </div>
 
-          <div className="overflow-hidden">
-            <AnimatedText delay={0.3}>
+          <div className="overflow-hidden flex">
+            <span delay={0.3}>
               <div
                 className="group/button relative px-8 py-3 rounded-full 
                   bg-black/20 lg:bg-white/5 lg:backdrop-blur-sm
@@ -116,7 +116,7 @@ export function ProjectCard({ project, index, isEven }) {
                   />
                 </svg>
               </div>
-            </AnimatedText>
+            </span>
           </div>
         </div>
 

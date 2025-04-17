@@ -68,7 +68,7 @@ export function Contact() {
             ))}
           </div>
 
-          <AnimatedText delay={0.3}>
+          <span delay={0.3}>
             <a
               href="/resume.pdf"
               download
@@ -81,7 +81,7 @@ export function Contact() {
               <span>Download Resume</span>
               <ArrowDownTrayIcon className="w-5 h-5 ml-2 mb-0.5 transition-transform duration-300 group-hover:translate-y-0.5" />
             </a>
-          </AnimatedText>
+          </span>
         </div>
       </div>
 
